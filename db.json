@@ -1,0 +1,105 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "João Silva",
+      "email": "joao@email.com",
+      "password": "123456",
+      "balance": 5000,
+      "transactionPassword": "123456"
+    },
+    {
+      "id": 2,
+      "name": "Maria Santos",
+      "email": "maria@email.com",
+      "password": "123456",
+      "balance": 3000,
+      "transactionPassword": "123456"
+    },
+    {
+      "name": "teste teste",
+      "email": "teste@teste.com",
+      "password": "123456",
+      "transactionPassword": "911818",
+      "id": 1755735351769,
+      "balance": 900
+    },
+    {
+      "name": "Roquele",
+      "email": "roquelecardoso@gmail.com",
+      "password": "656565",
+      "transactionPassword": "171820",
+      "id": 1755735517602,
+      "balance": 800
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "userId": 1,
+      "type": "TED",
+      "amount": 500,
+      "recipientName": "Carlos Oliveira",
+      "recipientDocument": "123.456.789-00",
+      "bank": "Banco do Brasil",
+      "agency": "1234",
+      "account": "12345-6",
+      "date": "2024-01-15T10:30:00.000Z",
+      "balance": 4500
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "type": "PIX",
+      "amount": 200,
+      "recipientName": "Ana Costa",
+      "recipientDocument": "987.654.321-00",
+      "pixKey": "ana@email.com",
+      "date": "2024-01-16T14:20:00.000Z",
+      "balance": 4300
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "type": "TED",
+      "amount": 1000,
+      "recipientName": "Pedro Lima",
+      "recipientDocument": "111.222.333-44",
+      "bank": "Itaú",
+      "agency": "5678",
+      "account": "98765-4",
+      "date": "2024-01-17T09:15:00.000Z",
+      "balance": 2000
+    },
+    {
+      "id": 1755735428322,
+      "userId": 1755735351769,
+      "type": "TED",
+      "recipientName": "Nicholas Dutra Lihtnov",
+      "recipientDocument": "03284946071",
+      "bank": "011",
+      "agency": "29424",
+      "account": "454508",
+      "pixKey": "",
+      "amount": 100,
+      "transactionPassword": "911818",
+      "date": "2025-08-21T00:17:08.322Z",
+      "balance": 900
+    },
+    {
+      "id": 1755735545126,
+      "userId": 1755735517602,
+      "type": "PIX",
+      "recipientName": "Nicholas Dutra Lihtnov",
+      "recipientDocument": "03284946071",
+      "bank": "",
+      "agency": "",
+      "account": "",
+      "pixKey": "03284946071",
+      "amount": 200,
+      "transactionPassword": "171820",
+      "date": "2025-08-21T00:19:05.126Z",
+      "balance": 800
+    }
+  ]
+}
