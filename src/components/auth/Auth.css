@@ -16,6 +16,18 @@
   max-width: 400px;
 }
 
+.login-logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
 .auth-card h2 {
   text-align: center;
   color: #333;
@@ -55,7 +67,7 @@
 .auth-button {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(to top, rgb(235, 54, 52) 28.65%, rgb(180, 19, 91) 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -98,7 +110,7 @@
 }
 
 .auth-links a {
-  color: #667eea;
+  color: rgb(255, 0, 70);;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;

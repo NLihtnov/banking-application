@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getCurrentUser } from '../../store/slices/authSlice';
 import { fetchTransactions } from '../../store/slices/transactionSlice';
 import './Home.css';
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { user, loading: authLoading } = useAppSelector((state) => state.auth);
   const { transactions, loading: transactionLoading } = useAppSelector((state) => state.transaction);
@@ -67,11 +69,11 @@ const Home: React.FC = () => {
         <div className="quick-actions">
           <h3>Ações Rápidas</h3>
           <div className="action-buttons">
-            <button className="action-button primary">
+            <button onClick={() => navigate('/transaction')} className="action-button primary">
               <span className="action-icon">💸</span>
               <span>Nova Transação</span>
             </button>
-            <button className="action-button secondary">
+            <button onClick={() => navigate('/history')} className="action-button secondary">
               <span className="action-icon">📊</span>
               <span>Ver Histórico</span>
             </button>

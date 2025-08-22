@@ -1,5 +1,9 @@
 import axios from 'axios';
+import * as jose from 'jose';
 import { LoginCredentials, RegisterData, TransactionForm, TransactionFilters, User, Transaction } from '../types';
+
+// Secret key para assinar JWT (em produção, isso viria do backend)
+const JWT_SECRET = new TextEncoder().encode('magnum-bank-secret-key-2024-super-secure');
 
 const API_BASE_URL = 'http://localhost:3001';
 
@@ -34,8 +38,20 @@ export const authService = {
       throw new Error('Senha incorreta');
     }
     
-    // Simular JWT token
-    const token = btoa(JSON.stringify({ userId: user.id, email: user.email }));
+    // Criar JWT token real
+    const payload = {
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+      iat: Math.floor(Date.now() / 1000), // Issued at
+      exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // Expira em 24 horas
+    };
+    
+    const token = await new jose.SignJWT(payload)
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('24h')
+      .sign(JWT_SECRET);
     
     return { user, token };
   },
@@ -56,8 +72,20 @@ export const authService = {
     const response = await api.post('/users', newUser);
     const user = response.data;
     
-    // Simular JWT token
-    const token = btoa(JSON.stringify({ userId: user.id, email: user.email }));
+    // Criar JWT token real
+    const payload = {
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+      iat: Math.floor(Date.now() / 1000), // Issued at
+      exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // Expira em 24 horas
+    };
+    
+    const token = await new jose.SignJWT(payload)
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('24h')
+      .sign(JWT_SECRET);
     
     return { user, token };
   },
@@ -69,11 +97,27 @@ export const authService = {
     }
 
     try {
-      const decoded = JSON.parse(atob(token));
-      const response = await api.get(`/users/${decoded.userId}`);
+      // Verificar e decodificar JWT token
+      const { payload } = await jose.jwtVerify(token, JWT_SECRET);
+      
+      // Verificar se o token expirou
+      if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
+        localStorage.removeItem('token');
+        throw new Error('Token expirado');
+      }
+      
+      const response = await api.get(`/users/${payload.userId}`);
       return response.data;
     } catch (error) {
-      throw new Error('Token inválido');
+      if (error instanceof jose.errors.JWTExpired) {
+        localStorage.removeItem('token');
+        throw new Error('Token expirado');
+      }
+      if (error instanceof jose.errors.JWTInvalid) {
+        localStorage.removeItem('token');
+        throw new Error('Token inválido');
+      }
+      throw error;
     }
   },
 };
@@ -86,47 +130,59 @@ export const transactionService = {
       throw new Error('Token não encontrado');
     }
 
-    const decoded = JSON.parse(atob(token));
-    let url = `/transactions?userId=${decoded.userId}`;
+    try {
+      const { payload } = await jose.jwtVerify(token, JWT_SECRET);
+      let url = `/transactions?userId=${payload.userId}`;
 
-    if (filters) {
-      if (filters.type) {
-        url += `&type=${filters.type}`;
-      }
-      if (filters.period) {
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - filters.period);
-        url += `&date_gte=${startDate.toISOString()}`;
-      }
-      if (filters.startDate) {
-        url += `&date_gte=${filters.startDate}`;
-      }
-      if (filters.endDate) {
-        url += `&date_lte=${filters.endDate}`;
-      }
-      if (filters.minAmount) {
-        url += `&amount_gte=${filters.minAmount}`;
-      }
-      if (filters.maxAmount) {
-        url += `&amount_lte=${filters.maxAmount}`;
-      }
-    }
-
-    const response = await api.get(url);
-    let transactions = response.data;
-
-    // Ordenação
-    if (filters?.sortBy) {
-      transactions.sort((a: Transaction, b: Transaction) => {
-        const order = filters.sortOrder === 'desc' ? -1 : 1;
-        if (filters.sortBy === 'date') {
-          return order * (new Date(a.date).getTime() - new Date(b.date).getTime());
+      if (filters) {
+        if (filters.type) {
+          url += `&type=${filters.type}`;
         }
-        return order * (a.amount - b.amount);
-      });
-    }
+        if (filters.period) {
+          const startDate = new Date();
+          startDate.setDate(startDate.getDate() - filters.period);
+          url += `&date_gte=${startDate.toISOString()}`;
+        }
+        if (filters.startDate) {
+          url += `&date_gte=${filters.startDate}`;
+        }
+        if (filters.endDate) {
+          url += `&date_lte=${filters.endDate}`;
+        }
+        if (filters.minAmount) {
+          url += `&amount_gte=${filters.minAmount}`;
+        }
+        if (filters.maxAmount) {
+          url += `&amount_lte=${filters.maxAmount}`;
+        }
+      }
 
-    return transactions;
+      const response = await api.get(url);
+      let transactions = response.data;
+
+      // Ordenação
+      if (filters?.sortBy) {
+        transactions.sort((a: Transaction, b: Transaction) => {
+          const order = filters.sortOrder === 'desc' ? -1 : 1;
+          if (filters.sortBy === 'date') {
+            return order * (new Date(a.date).getTime() - new Date(b.date).getTime());
+          }
+          return order * (a.amount - b.amount);
+        });
+      }
+
+      return transactions;
+    } catch (error) {
+      if (error instanceof jose.errors.JWTExpired) {
+        localStorage.removeItem('token');
+        throw new Error('Token expirado');
+      }
+      if (error instanceof jose.errors.JWTInvalid) {
+        localStorage.removeItem('token');
+        throw new Error('Token inválido');
+      }
+      throw error;
+    }
   },
 
   createTransaction: async (transactionData: TransactionForm): Promise<Transaction> => {
@@ -135,36 +191,48 @@ export const transactionService = {
       throw new Error('Token não encontrado');
     }
 
-    const decoded = JSON.parse(atob(token));
-    
-    // Verificar senha de transação
-    const userResponse = await api.get(`/users/${decoded.userId}`);
-    const user = userResponse.data;
-    
-    if (user.transactionPassword !== transactionData.transactionPassword) {
-      throw new Error('Senha de transação incorreta');
+    try {
+      const { payload } = await jose.jwtVerify(token, JWT_SECRET);
+      
+      // Verificar senha de transação
+      const userResponse = await api.get(`/users/${payload.userId}`);
+      const user = userResponse.data;
+      
+      if (user.transactionPassword !== transactionData.transactionPassword) {
+        throw new Error('Senha de transação incorreta');
+      }
+
+      if (user.balance < transactionData.amount) {
+        throw new Error('Saldo insuficiente');
+      }
+
+      // Criar transação
+      const newTransaction = {
+        id: Date.now(),
+        userId: payload.userId,
+        ...transactionData,
+        date: new Date().toISOString(),
+        balance: user.balance - transactionData.amount,
+      };
+
+      // Atualizar saldo do usuário
+      await api.patch(`/users/${payload.userId}`, {
+        balance: user.balance - transactionData.amount,
+      });
+
+      const response = await api.post('/transactions', newTransaction);
+      return response.data;
+    } catch (error) {
+      if (error instanceof jose.errors.JWTExpired) {
+        localStorage.removeItem('token');
+        throw new Error('Token expirado');
+      }
+      if (error instanceof jose.errors.JWTInvalid) {
+        localStorage.removeItem('token');
+        throw new Error('Token inválido');
+      }
+      throw error;
     }
-
-    if (user.balance < transactionData.amount) {
-      throw new Error('Saldo insuficiente');
-    }
-
-    // Criar transação
-    const newTransaction = {
-      id: Date.now(),
-      userId: decoded.userId,
-      ...transactionData,
-      date: new Date().toISOString(),
-      balance: user.balance - transactionData.amount,
-    };
-
-    // Atualizar saldo do usuário
-    await api.patch(`/users/${decoded.userId}`, {
-      balance: user.balance - transactionData.amount,
-    });
-
-    const response = await api.post('/transactions', newTransaction);
-    return response.data;
   },
 };
 

@@ -33,9 +33,18 @@
   opacity: 0.8;
 }
 
+.navbar-logo-image {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
 .navbar-menu {
   display: flex;
   gap: 30px;
+  margin-left: 110px;
 }
 
 .navbar-link {
@@ -82,37 +91,152 @@
   transform: translateY(-1px);
 }
 
+/* Botão hambúrguer */
+.hamburger-menu {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.hamburger-menu:hover {
+  transform: scale(1.05);
+}
+
+.hamburger-icon {
+  width: 28px;
+  height: 28px;
+  transition: all 0.3s ease;
+}
+
+/* Menu móvel */
+.mobile-menu {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgb(235, 54, 52) 28.65%, rgb(180, 19, 91) 100%);
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 999;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-menu.open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.mobile-menu-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 18px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: opacity 0.3s ease;
+}
+
+.mobile-menu-link:hover {
+  opacity: 0.8;
+}
+
+.mobile-menu-user {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.mobile-user-name {
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.mobile-logout-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.mobile-logout-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 @media (max-width: 768px) {
   .navbar-container {
     padding: 0 15px;
     height: 60px;
   }
   
-  .navbar-logo {
-    font-size: 20px;
+  .navbar-logo-image {
+    height: 35px;
   }
   
   .navbar-menu {
-    gap: 15px;
-  }
-  
-  .navbar-link {
-    font-size: 14px;
-    padding: 6px 12px;
-  }
-  
-  .user-name {
     display: none;
+  }
+  
+  .navbar-user {
+    display: none;
+  }
+  
+  .hamburger-menu {
+    display: flex;
+  }
+  
+  .mobile-menu {
+    top: 60px;
   }
 }
 
 @media (max-width: 480px) {
-  .navbar-menu {
-    gap: 10px;
+  .navbar-container {
+    height: 55px;
   }
   
-  .navbar-link {
-    font-size: 13px;
-    padding: 5px 10px;
+  .navbar-logo-image {
+    height: 30px;
+  }
+  
+  .hamburger-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .mobile-menu {
+    top: 55px;
+  }
+  
+  .mobile-menu-content {
+    padding: 15px;
+  }
+  
+  .mobile-menu-link {
+    font-size: 16px;
+    padding: 10px 0;
   }
 }
