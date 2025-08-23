@@ -1,0 +1,58 @@
+# Arquivos de build e distribuição
+build/
+dist/
+coverage/
+
+# Arquivos de configuração
+craco.config.js
+dev-config.js
+jest.config.js
+jest.setup.js
+tsconfig.json
+webpack.config.js
+
+# Arquivos de dependências
+node_modules/
+package*.json
+
+# Arquivos de ambiente
+.env*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Arquivos de servidor
+websocket-server.js
+websocket-package.json
+
+# Arquivos de dados
+db.json
+
+# Arquivos de documentação
+README.md
+DEV-README.md
+ARCHITECTURE.md
+
+# Arquivos de teste existentes (para evitar duplicação)
+**/*.test.js
+**/*.test.jsx
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.js
+**/*.spec.jsx
+**/*.spec.ts
+**/*.spec.tsx
+**/__tests__/
+
+# Arquivos de configuração de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos temporários
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db

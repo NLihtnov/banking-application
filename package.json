@@ -29,6 +29,11 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "test:watch": "craco test --watch",
+    "test:coverage": "craco test --coverage --watchAll=false",
+    "test:coverage:watch": "craco test --coverage",
+    "test:ci": "craco test --coverage --watchAll=false --ci --coverageReporters=lcov --coverageReporters=text",
+    "test:debug": "craco test --detectOpenHandles --forceExit",
     "eject": "react-scripts eject",
     "server": "json-server --watch db.json --port 3001",
     "websocket": "node websocket-server.js",
@@ -60,7 +65,8 @@
     "@craco/craco": "^7.1.0",
     "concurrently": "^8.2.2",
     "husky": "^8.0.3",
-    "lint-staged": "^13.2.3"
+    "lint-staged": "^13.2.3",
+    "ts-jest": "^29.4.1"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx}": [
