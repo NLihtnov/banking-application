@@ -1,0 +1,43 @@
+.balance-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 24px;
+  color: white;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  margin-bottom: 24px;
+}
+
+.balance-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.balance-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.balance-amount {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.balance-info {
+  text-align: center;
+  opacity: 0.8;
+}
+
+.balance-info p {
+  margin: 0 0 4px 0;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.balance-info small {
+  font-size: 12px;
+  opacity: 0.7;
+}

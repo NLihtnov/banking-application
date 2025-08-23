@@ -1,12 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './slices/authSlice';
-import transactionReducer from './slices/transactionSlice';
+import authReducer from './authSlice';
+import transactionReducer from './transactionSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     transaction: transactionReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [],
+        ignoredPaths: [],
+        warnAfter: 128,
+      },
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -31,6 +31,14 @@
       "transactionPassword": "171820",
       "id": 1755735517602,
       "balance": 800
+    },
+    {
+      "id": 1755904528713,
+      "name": "teste tes",
+      "email": "teste14@teste.com",
+      "password": "123456",
+      "balance": 1000,
+      "transactionPassword": "123456"
     }
   ],
   "transactions": [

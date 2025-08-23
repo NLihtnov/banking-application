@@ -2,9 +2,8 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './store';
-import { getCurrentUser } from './store/slices/authSlice';
+import { getCurrentUser } from './store/authSlice';
 
-// Components
 import Navbar from './components/layout/Navbar';
 import PrivateRoute from './components/layout/PrivateRoute';
 import Login from './components/auth/Login';
@@ -13,7 +12,6 @@ import Home from './components/pages/Home';
 import Transaction from './components/pages/Transaction';
 import History from './components/pages/History';
 
-// Styles
 import './App.css';
 
 const AppContent: React.FC = () => {
@@ -29,11 +27,9 @@ const AppContent: React.FC = () => {
     <Router>
       <div className="App">
         <Routes>
-          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           
-          {/* Private Routes */}
           <Route
             path="/home"
             element={
@@ -68,7 +64,6 @@ const AppContent: React.FC = () => {
             }
           />
           
-          {/* Default redirect */}
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>

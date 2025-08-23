@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getCurrentUser } from '../../store/slices/authSlice';
-import { fetchTransactions, setFilters, clearFilters } from '../../store/slices/transactionSlice';
-import { TransactionFilters } from '../../types';
+import { getCurrentUser } from '../../store/authSlice';
+import { fetchTransactions, setFilters, clearTransactions } from '../../store/transactionSlice';
+import type { TransactionFilters } from '../../domain/repositories/ITransactionRepository';
+
 import './History.css';
 
 const History: React.FC = () => {
@@ -47,7 +48,7 @@ const History: React.FC = () => {
 
   const clearAllFilters = () => {
     setLocalFilters({});
-    dispatch(clearFilters());
+    dispatch(clearTransactions());
   };
 
   const handleSort = (sortBy: 'date' | 'amount') => {
@@ -221,7 +222,7 @@ const History: React.FC = () => {
                       - {formatCurrency(transaction.amount)}
                     </div>
                     <div className="transaction-balance">
-                      Saldo: {formatCurrency(transaction.balance)}
+                      Saldo: {formatCurrency(transaction.balance || 0)}
                     </div>
                   </div>
                 </div>

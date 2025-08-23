@@ -1,18 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { login, clearError } from '../../store/slices/authSlice';
+import { useAppDispatch, useAppSelector, useForm } from '../../hooks';
+import { login, clearError } from '../../store/authSlice';
+import { validateEmail } from '../../utils/validators';
 import './Auth.css';
 
-const Login: React.FC = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
+const Login: React.FC = memo(() => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+
+  const { formData, errors, touched, handleChange, handleBlur, validateForm } = useForm(
+    { email: '', password: '' },
+    {
+      email: {
+        required: true,
+        custom: (value) => !validateEmail(value) ? 'Digite um email válido' : null,
+      },
+      password: {
+        required: true,
+        minLength: 6,
+      },
+    }
+  );
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -26,16 +36,12 @@ const Login: React.FC = () => {
     };
   }, [dispatch]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(login(formData));
+    
+    if (validateForm()) {
+      dispatch(login(formData));
+    }
   };
 
   return (
@@ -58,9 +64,12 @@ const Login: React.FC = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
               placeholder="Digite seu email"
+              className={touched.email && errors.email ? 'error-input' : ''}
             />
+            {touched.email && errors.email && <div className="error-message">{errors.email}</div>}
           </div>
           <div className="form-group">
             <label htmlFor="password">Senha</label>
@@ -70,11 +79,14 @@ const Login: React.FC = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
               placeholder="Digite sua senha"
+              className={touched.password && errors.password ? 'error-input' : ''}
             />
+            {touched.password && errors.password && <div className="error-message">{errors.password}</div>}
           </div>
-          {error && <div className="error-message">{error}</div>}
+          {error && <div className="error-message global-error">{error}</div>}
           <button type="submit" disabled={loading} className="auth-button">
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
@@ -87,6 +99,6 @@ const Login: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Login;

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { logout } from '../../store/slices/authSlice';
+import { logout } from '../../store/authSlice';
 
 import './Navbar.css';
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC = memo(() => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
@@ -69,7 +69,6 @@ const Navbar: React.FC = () => {
         </button>
       </div>
 
-      {/* Menu móvel */}
       <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
         <div className="mobile-menu-content">
           <Link to="/home" className="mobile-menu-link" onClick={closeMenu}>
@@ -91,6 +90,6 @@ const Navbar: React.FC = () => {
       </div>
     </nav>
   );
-};
+});
 
 export default Navbar;

@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getCurrentUser } from '../../store/slices/authSlice';
-import { fetchTransactions } from '../../store/slices/transactionSlice';
+import { getCurrentUser } from '../../store/authSlice';
+import { fetchTransactions } from '../../store/transactionSlice';
+import { formatCurrency, formatDate } from '../../utils/formatters';
 import './Home.css';
 
-const Home: React.FC = () => {
+const Home: React.FC = memo(() => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { user, loading: authLoading } = useAppSelector((state) => state.auth);
@@ -15,25 +16,10 @@ const Home: React.FC = () => {
     if (!user) {
       dispatch(getCurrentUser());
     }
-    dispatch(fetchTransactions());
+    dispatch(fetchTransactions(undefined));
   }, [dispatch, user]);
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value);
-  };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   const recentTransactions = transactions.slice(0, 5);
 
@@ -126,6 +112,6 @@ const Home: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Home;

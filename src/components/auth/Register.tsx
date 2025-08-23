@@ -1,24 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { register, clearError } from '../../store/slices/authSlice';
+import { useAppDispatch, useAppSelector, useForm } from '../../hooks';
+import { register, clearError } from '../../store/authSlice';
+import { validateEmail } from '../../utils/validators';
 import './Auth.css';
 
-const Register: React.FC = () => {
-  const [formData, setFormData] = useState({
+const Register: React.FC = memo(() => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+
+  const initialData = {
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
     transactionPassword: '',
     confirmTransactionPassword: '',
-  });
+  };
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { formData, errors, touched, handleChange, handleBlur, validateForm } = useForm(
+    initialData,
+    {
+      name: {
+        required: true,
+        minLength: 2,
+      },
+      email: {
+        required: true,
+        custom: (value) => !validateEmail(value) ? 'Digite um email válido' : null,
+      },
+      password: {
+        required: true,
+        minLength: 6,
+      },
+      confirmPassword: {
+        required: true,
+        custom: (value, formData) => value !== formData.password ? 'As senhas não coincidem' : null,
+      },
+      transactionPassword: {
+        required: true,
+        minLength: 6,
+      },
+      confirmTransactionPassword: {
+        required: true,
+        custom: (value, formData) => value !== formData.transactionPassword ? 'As senhas de transação não coincidem' : null,
+      },
+    }
+  );
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -32,45 +61,13 @@ const Register: React.FC = () => {
     };
   }, [dispatch]);
 
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'As senhas não coincidem';
-    }
-
-    if (formData.transactionPassword !== formData.confirmTransactionPassword) {
-      newErrors.confirmTransactionPassword = 'As senhas de transação não coincidem';
-    }
-
-    if (formData.password.length < 6) {
-      newErrors.password = 'A senha deve ter pelo menos 6 caracteres';
-    }
-
-    if (formData.transactionPassword.length < 6) {
-      newErrors.transactionPassword = 'A senha de transação deve ter pelo menos 6 caracteres';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
-      return;
+    if (validateForm()) {
+      const { confirmPassword, confirmTransactionPassword, ...registerData } = formData;
+      dispatch(register(registerData));
     }
-
-    const { confirmPassword, confirmTransactionPassword, ...registerData } = formData;
-    dispatch(register(registerData));
   };
 
   return (
@@ -93,9 +90,12 @@ const Register: React.FC = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
               placeholder="Digite seu nome completo"
+              className={touched.name && errors.name ? 'error-input' : ''}
             />
+            {touched.name && errors.name && <div className="error-message">{errors.name}</div>}
           </div>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -105,9 +105,12 @@ const Register: React.FC = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
               placeholder="Digite seu email"
+              className={touched.email && errors.email ? 'error-input' : ''}
             />
+            {touched.email && errors.email && <div className="error-message">{errors.email}</div>}
           </div>
           <div className="form-group">
             <label htmlFor="password">Senha</label>
@@ -117,10 +120,12 @@ const Register: React.FC = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
               placeholder="Digite sua senha"
+              className={touched.password && errors.password ? 'error-input' : ''}
             />
-            {errors.password && <div className="error-message">{errors.password}</div>}
+            {touched.password && errors.password && <div className="error-message">{errors.password}</div>}
           </div>
           <div className="form-group">
             <label htmlFor="confirmPassword">Confirmar Senha</label>
@@ -130,10 +135,12 @@ const Register: React.FC = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
               placeholder="Confirme sua senha"
+              className={touched.confirmPassword && errors.confirmPassword ? 'error-input' : ''}
             />
-            {errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}
+            {touched.confirmPassword && errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}
           </div>
           <div className="form-group">
             <label htmlFor="transactionPassword">Senha de Transação</label>
@@ -143,10 +150,12 @@ const Register: React.FC = () => {
               name="transactionPassword"
               value={formData.transactionPassword}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
               placeholder="Digite sua senha de transação"
+              className={touched.transactionPassword && errors.transactionPassword ? 'error-input' : ''}
             />
-            {errors.transactionPassword && <div className="error-message">{errors.transactionPassword}</div>}
+            {touched.transactionPassword && errors.transactionPassword && <div className="error-message">{errors.transactionPassword}</div>}
           </div>
           <div className="form-group">
             <label htmlFor="confirmTransactionPassword">Confirmar Senha de Transação</label>
@@ -156,12 +165,14 @@ const Register: React.FC = () => {
               name="confirmTransactionPassword"
               value={formData.confirmTransactionPassword}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
               placeholder="Confirme sua senha de transação"
+              className={touched.confirmTransactionPassword && errors.confirmTransactionPassword ? 'error-input' : ''}
             />
-            {errors.confirmTransactionPassword && <div className="error-message">{errors.confirmTransactionPassword}</div>}
+            {touched.confirmTransactionPassword && errors.confirmTransactionPassword && <div className="error-message">{errors.confirmTransactionPassword}</div>}
           </div>
-          {error && <div className="error-message">{error}</div>}
+          {error && <div className="error-message global-error">{error}</div>}
           <button type="submit" disabled={loading} className="auth-button">
             {loading ? 'Registrando...' : 'Registrar'}
           </button>
@@ -174,6 +185,6 @@ const Register: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Register;

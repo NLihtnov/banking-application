@@ -1,6 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { AuthState, LoginCredentials, RegisterData, User } from '../../types';
-import { authService } from '../../services/api';
+import { UserDTO } from '../domain/entities/types';
+import type { LoginCredentials, RegisterData } from '../application/usecases/AuthenticationUseCase';
+import { DependencyContainer } from '../infrastructure/container/DependencyContainer';
+
+interface AuthState {
+  user: UserDTO | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
+}
 
 const initialState: AuthState = {
   user: null,
@@ -10,28 +19,48 @@ const initialState: AuthState = {
   error: null,
 };
 
+const authUseCase = DependencyContainer.getInstance().getAuthenticationUseCase();
+
+const convertUserToDTO = (user: any): UserDTO => ({
+  id: user.id || user._id,
+  name: user.name || user._name,
+  email: user.email || user._email,
+  balance: user.balance || user._balance
+});
+
 export const login = createAsyncThunk(
   'auth/login',
   async (credentials: LoginCredentials) => {
-    const response = await authService.login(credentials);
-    localStorage.setItem('token', response.token);
-    return response;
+    const result = await authUseCase.login(credentials);
+    localStorage.setItem('token', result.token);
+    return {
+      user: convertUserToDTO(result.user),
+      token: result.token
+    };
   }
 );
 
 export const register = createAsyncThunk(
   'auth/register',
   async (data: RegisterData) => {
-    const response = await authService.register(data);
-    localStorage.setItem('token', response.token);
-    return response;
+    const result = await authUseCase.register(data);
+    localStorage.setItem('token', result.token);
+    return {
+      user: convertUserToDTO(result.user),
+      token: result.token
+    };
   }
 );
 
 export const getCurrentUser = createAsyncThunk(
   'auth/getCurrentUser',
   async () => {
-    return await authService.getCurrentUser();
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token não encontrado');
+    }
+    const user = await authUseCase.getCurrentUser(token);
+    return convertUserToDTO(user);
   }
 );
 
@@ -57,7 +86,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Login
       .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -72,7 +100,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Erro no login';
       })
-      // Register
       .addCase(register.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -87,7 +114,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Erro no registro';
       })
-      // Get Current User
       .addCase(getCurrentUser.pending, (state) => {
         state.loading = true;
       })
