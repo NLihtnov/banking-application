@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hooks';
 import { getCurrentUser } from '../../store/authSlice';
 import { BalanceCard } from '../transaction/BalanceCard';
@@ -9,7 +10,9 @@ import './Transaction.css';
 
 const Transaction: React.FC = () => {
   const [step, setStep] = useState<'form' | 'confirmation'>('form');
+  const [showSuccess, setShowSuccess] = useState(false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   
   const { user, loading: authLoading } = useAppSelector((state) => state.auth);
   const { loading: transactionLoading } = useAppSelector((state) => state.transaction);
@@ -43,11 +46,18 @@ const Transaction: React.FC = () => {
 
   const handleConfirm = async () => {
     if (validateForm()) {
-      await executeTransaction(formData);
+      const result = await executeTransaction(formData);
+      
+      if (result.success) {
+        setShowSuccess(true);
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      }
     }
   };
 
-  const handleBack = () => {
+  const handleCancel = () => {
     setStep('form');
   };
 
@@ -61,7 +71,7 @@ const Transaction: React.FC = () => {
 
   return (
     <div className="transaction-container">
-      <div className="transaction-header">
+      <div className="transaction-header-new">
         <h1>Nova Transação</h1>
         <p>Realize transferências TED ou PIX de forma segura</p>
       </div>
@@ -82,12 +92,22 @@ const Transaction: React.FC = () => {
             loading={transactionLoading}
           />
         ) : (
-          <TransactionConfirmation
-            transactionData={formData}
-            onBack={handleBack}
-            onConfirm={handleConfirm}
-            loading={transactionLoading}
-          />
+          <>
+            {showSuccess ? (
+              <div className="success-message">
+                <div className="success-icon">✅</div>
+                <h3>Transação Realizada com Sucesso!</h3>
+                <p>Redirecionando para a página inicial...</p>
+              </div>
+            ) : (
+              <TransactionConfirmation
+                transactionData={formData}
+                onCancel={handleCancel}
+                onConfirm={handleConfirm}
+                loading={transactionLoading}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

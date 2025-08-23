@@ -181,97 +181,122 @@
   gap: 15px;
 }
 
-.transaction-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+.history-transaction-item {
   padding: 20px;
   border: 1px solid #e9ecef;
   border-radius: 8px;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.transaction-item:hover {
+.history-transaction-item:hover {
   background-color: #f8f9fa;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.transaction-info {
+.history-transaction-header {
   display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f2f5;
 }
 
-.transaction-type {
+.history-transaction-type {
   display: flex;
   align-items: center;
 }
 
-.type-badge {
-  padding: 4px 12px;
+.history-type-badge {
+  padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.type-badge.ted {
+.history-type-badge.ted {
   background-color: #e3f2fd;
   color: #1976d2;
+  border: 1px solid #bbdefb;
 }
 
-.type-badge.pix {
+.history-type-badge.pix {
   background-color: #f3e5f5;
   color: #7b1fa2;
+  border: 1px solid #e1bee7;
 }
 
-.transaction-details {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.transaction-recipient {
-  font-weight: 600;
-  color: #333;
-  font-size: 16px;
-}
-
-.transaction-document {
-  color: #666;
-  font-size: 14px;
-}
-
-.transaction-bank,
-.transaction-pix {
-  color: #666;
-  font-size: 13px;
-  font-style: italic;
-}
-
-.transaction-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  text-align: right;
-}
-
-.transaction-date {
-  color: #666;
-  font-size: 14px;
-}
-
-.transaction-amount {
-  font-weight: 600;
+.history-transaction-amount {
+  font-weight: 700;
   color: #e74c3c;
-  font-size: 16px;
+  font-size: 18px;
 }
 
-.transaction-balance {
-  color: #666;
+.history-transaction-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.history-transaction-info-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.history-transaction-recipient {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.history-transaction-document {
+  color: #718096;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  background: #f7fafc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.history-transaction-bank,
+.history-transaction-pix {
+  color: #718096;
   font-size: 13px;
+  background: #f7fafc;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid #cbd5e0;
+}
+
+.history-transaction-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  text-align: left;
+  margin-top: 8px;
+}
+
+.history-transaction-date {
+  color: #718096;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.history-transaction-balance {
+  color: #718096;
+  font-size: 13px;
+  background: #edf2f7;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
 }
 
 .empty-state {
@@ -335,18 +360,24 @@
     justify-content: space-between;
   }
   
-  .transaction-item {
+  .history-transaction-item {
+    padding: 16px;
+  }
+  
+  .history-transaction-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+  
+  .history-transaction-content {
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
   }
   
-  .transaction-info {
-    width: 100%;
-  }
-  
-  .transaction-meta {
+  .history-transaction-meta {
     width: 100%;
     align-items: flex-start;
     text-align: left;
+    min-width: auto;
   }
 }

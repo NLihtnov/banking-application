@@ -78,7 +78,7 @@
 }
 
 .action-buttons {
-  display: grid;
+  display: flex;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
 }
@@ -137,7 +137,7 @@
   margin: 0;
 }
 
-.transaction-count {
+.home-transaction-count {
   color: #666;
   font-size: 14px;
 }
@@ -148,7 +148,7 @@
   gap: 12px;
 }
 
-.transaction-item {
+.home-transaction-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -158,22 +158,22 @@
   transition: background-color 0.2s ease;
 }
 
-.transaction-item:hover {
+.home-transaction-item:hover {
   background-color: #f8f9fa;
 }
 
-.transaction-info {
+.home-transaction-info {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-.transaction-type {
+.home-transaction-type {
   display: flex;
   align-items: center;
 }
 
-.type-badge {
+.home-type-badge {
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;
@@ -181,33 +181,33 @@
   text-transform: uppercase;
 }
 
-.type-badge.ted {
+.home-type-badge.ted {
   background-color: #e3f2fd;
   color: #1976d2;
 }
 
-.type-badge.pix {
+.home-type-badge.pix {
   background-color: #f3e5f5;
   color: #7b1fa2;
 }
 
-.transaction-details {
+.home-transaction-details {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.transaction-recipient {
+.home-transaction-recipient {
   font-weight: 500;
   color: #333;
 }
 
-.transaction-date {
+.home-transaction-date {
   font-size: 14px;
   color: #666;
 }
 
-.transaction-amount {
+.home-transaction-amount {
   font-weight: 600;
   color: #e74c3c;
   font-size: 16px;
@@ -272,13 +272,13 @@
     gap: 10px;
   }
   
-  .transaction-item {
+  .home-transaction-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
   
-  .transaction-amount {
+  .home-transaction-amount {
     align-self: flex-end;
   }
 }

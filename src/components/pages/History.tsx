@@ -188,41 +188,45 @@ const History: React.FC = () => {
           ) : transactions.length > 0 ? (
             <div className="transactions-list">
               {transactions.map((transaction) => (
-                <div key={transaction.id} className="transaction-item">
-                  <div className="transaction-info">
-                    <div className="transaction-type">
-                      <span className={`type-badge ${transaction.type.toLowerCase()}`}>
+                <div key={transaction.id} className="history-transaction-item">
+                  <div className="history-transaction-header">
+                    <div className="history-transaction-type">
+                      <span className={`history-type-badge ${transaction.type.toLowerCase()}`}>
                         {transaction.type}
                       </span>
                     </div>
-                    <div className="transaction-details">
-                      <div className="transaction-recipient">
+                    <div className="history-transaction-amount">
+                      - {formatCurrency(transaction.amount)}
+                    </div>
+                  </div>
+                  
+                  <div className="history-transaction-content">
+                    <div className="history-transaction-info-details">
+                      <div className="history-transaction-recipient">
                         {transaction.recipientName}
                       </div>
-                      <div className="transaction-document">
+                      <div className="history-transaction-document">
                         {transaction.recipientDocument}
                       </div>
                       {transaction.type === 'TED' && (
-                        <div className="transaction-bank">
+                        <div className="history-transaction-bank">
                           {transaction.bank} - Ag: {transaction.agency} - CC: {transaction.account}
                         </div>
                       )}
                       {transaction.type === 'PIX' && (
-                        <div className="transaction-pix">
+                        <div className="history-transaction-pix">
                           Chave PIX: {transaction.pixKey}
                         </div>
                       )}
                     </div>
-                  </div>
-                  <div className="transaction-meta">
-                    <div className="transaction-date">
-                      {formatDate(transaction.date)}
-                    </div>
-                    <div className="transaction-amount">
-                      - {formatCurrency(transaction.amount)}
-                    </div>
-                    <div className="transaction-balance">
-                      Saldo: {formatCurrency(transaction.balance || 0)}
+                    
+                    <div className="history-transaction-meta">
+                      <div className="history-transaction-date">
+                        {formatDate(transaction.date)}
+                      </div>
+                      <div className="history-transaction-balance">
+                        Saldo: {formatCurrency(transaction.balance || 0)}
+                      </div>
                     </div>
                   </div>
                 </div>

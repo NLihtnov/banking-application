@@ -11,6 +11,7 @@ import Register from './components/auth/Register';
 import Home from './components/pages/Home';
 import Transaction from './components/pages/Transaction';
 import History from './components/pages/History';
+import { ToastContainer } from './components/notifications/ToastContainer';
 
 import './App.css';
 
@@ -67,6 +68,7 @@ const AppContent: React.FC = () => {
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
+        <ToastContainer />
       </div>
     </Router>
   );

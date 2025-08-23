@@ -2,6 +2,8 @@ import React, { memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logout } from '../../store/authSlice';
+import { NotificationBell } from '../notifications/NotificationBell';
+import { NotificationPanel } from '../notifications/NotificationPanel';
 
 import './Navbar.css';
 
@@ -50,6 +52,7 @@ const Navbar: React.FC = memo(() => {
         </div>
         
         <div className="navbar-user">
+          <NotificationBell />
           <span className="user-name">Olá, {user?.name}</span>
           <button onClick={handleLogout} className="logout-button">
             Sair
@@ -88,6 +91,7 @@ const Navbar: React.FC = memo(() => {
           </div>
         </div>
       </div>
+      <NotificationPanel />
     </nav>
   );
 });

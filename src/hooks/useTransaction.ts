@@ -1,22 +1,58 @@
 import { useCallback } from 'react';
-import { useAppDispatch } from './index';
+import { useAppDispatch, useAppSelector } from './index';
 import { createTransaction } from '../store/transactionSlice';
+import { updateBalance } from '../store/authSlice';
 import { CreateTransactionData } from '../domain/entities/types';
+import { webSocketService } from '../services/WebSocketService';
 
 export const useTransaction = () => {
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector(state => state.auth);
 
   const executeTransaction = useCallback(async (transactionData: CreateTransactionData) => {
     try {
-      await dispatch(createTransaction(transactionData)).unwrap();
-      return { success: true };
+      const result = await dispatch(createTransaction(transactionData)).unwrap();
+      
+      if (result) {
+        // Atualizar saldo do usuário
+        if (user) {
+          const newBalance = user.balance - transactionData.amount;
+          dispatch(updateBalance(newBalance));
+          
+          // Enviar notificação de atualização de saldo
+          webSocketService.send({
+            type: 'balance_updated',
+            payload: {
+              oldBalance: user.balance,
+              newBalance: newBalance
+            },
+            timestamp: new Date().toISOString()
+          });
+        }
+        
+        // Enviar notificação de transação via WebSocket
+        webSocketService.send({
+          type: 'transaction_created',
+          payload: {
+            id: result.id,
+            type: transactionData.type,
+            amount: transactionData.amount,
+            recipientName: transactionData.recipientName
+          },
+          timestamp: new Date().toISOString()
+        });
+        
+        return { success: true };
+      } else {
+        return { success: false, error: 'Falha ao criar transação' };
+      }
     } catch (error) {
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Erro desconhecido' 
       };
     }
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   return {
     executeTransaction,

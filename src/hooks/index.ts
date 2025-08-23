@@ -8,3 +8,4 @@ export { useForm } from './useForm';
 export { useTransactionForm } from './useTransactionForm';
 export { useTransaction } from './useTransaction';
 export { useSerializableData } from './useSerializableData';
+export { useNotifications } from './useNotifications';

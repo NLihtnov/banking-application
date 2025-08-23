@@ -79,23 +79,23 @@ const Home: React.FC = memo(() => {
           ) : recentTransactions.length > 0 ? (
             <div className="transactions-list">
               {recentTransactions.map((transaction) => (
-                <div key={transaction.id} className="transaction-item">
-                  <div className="transaction-info">
-                    <div className="transaction-type">
-                      <span className={`type-badge ${transaction.type.toLowerCase()}`}>
+                <div key={transaction.id} className="home-transaction-item">
+                  <div className="home-transaction-info">
+                    <div className="home-transaction-type">
+                      <span className={`home-type-badge ${transaction.type.toLowerCase()}`}>
                         {transaction.type}
                       </span>
                     </div>
-                    <div className="transaction-details">
-                      <div className="transaction-recipient">
+                    <div className="home-transaction-details">
+                      <div className="home-transaction-recipient">
                         {transaction.recipientName}
                       </div>
-                      <div className="transaction-date">
+                      <div className="home-transaction-date">
                         {formatDate(transaction.date)}
                       </div>
                     </div>
                   </div>
-                  <div className="transaction-amount">
+                  <div className="home-transaction-amount">
                     - {formatCurrency(transaction.amount)}
                   </div>
                 </div>
