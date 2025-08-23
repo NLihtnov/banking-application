@@ -8,15 +8,25 @@ export const ToastContainer: React.FC = () => {
   const [activeToasts, setActiveToasts] = useState<NotificationData[]>([]);
 
   useEffect(() => {
-    const latestNotification = notifications[0];
-    
-    if (latestNotification && 
-        (latestNotification.priority === 'high' || latestNotification.priority === 'urgent') &&
-        !activeToasts.find(toast => toast.id === latestNotification.id)) {
-      
-      setActiveToasts(prev => [...prev, latestNotification]);
-    }
-  }, [notifications, activeToasts]);
+    // Process all high/urgent priority notifications
+    const highUrgentNotifications = notifications.filter(
+      n => (n.priority === 'high' || n.priority === 'urgent')
+    );
+
+    // Add new notifications that aren't already active
+    highUrgentNotifications.forEach(newNotification => {
+      if (!activeToasts.some(activeToast => activeToast.id === newNotification.id)) {
+        setActiveToasts(prev => [...prev, newNotification]);
+      }
+    });
+
+    // Remove toasts that are no longer in the notifications array
+    setActiveToasts(prev => 
+      prev.filter(activeToast => 
+        notifications.some(n => n.id === activeToast.id)
+      )
+    );
+  }, [notifications]);
 
   const removeToast = (notificationId: string) => {
     setActiveToasts(prev => prev.filter(toast => toast.id !== notificationId));
