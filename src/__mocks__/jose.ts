@@ -1,17 +1,19 @@
 // Mock para a biblioteca jose (JWT)
-export const SignJWT = jest.fn().mockImplementation(() => {
-  const mockJwt = {
-    setProtectedHeader: jest.fn().mockReturnThis(),
-    setIssuedAt: jest.fn().mockReturnThis(),
-    setExpirationTime: jest.fn().mockReturnThis(),
-    setIssuer: jest.fn().mockReturnThis(),
-    setAudience: jest.fn().mockReturnThis(),
-    setSubject: jest.fn().mockReturnThis(),
-    setJti: jest.fn().mockReturnThis(),
-    sign: jest.fn().mockResolvedValue('mock-jwt-token'),
-  };
-  return mockJwt;
-});
+export class SignJWT {
+  private _payload: any;
+  setProtectedHeader = jest.fn(() => this);
+  setIssuedAt = jest.fn(() => this);
+  setExpirationTime = jest.fn(() => this);
+  setIssuer = jest.fn(() => this);
+  setAudience = jest.fn(() => this);
+  setSubject = jest.fn(() => this);
+  setJti = jest.fn(() => this);
+  sign = jest.fn(async () => 'mock-jwt-token');
+
+  constructor(payload: any) {
+    this._payload = payload;
+  }
+}
 
 // Mock para verificação de token
 export const jwtVerify = jest.fn().mockResolvedValue({

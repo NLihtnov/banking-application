@@ -78,3 +78,6 @@ global.WebSocket = class WebSocket {
   addEventListener() {}
   removeEventListener() {}
 };
+
+// Ativa o mock global do módulo 'jose' usando src/__mocks__/jose.ts
+jest.mock('jose');

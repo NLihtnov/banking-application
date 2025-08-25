@@ -480,8 +480,10 @@ describe('NotificationPanel', () => {
     
     render(<NotificationPanel />, { wrapper });
     
-    // Check if the text exists in the document, even if broken up
-    const summaryElement = screen.getByText(/2/);
+    // Scope to the summary element to avoid matching times like "602d atrás"
+    const summaryElement = screen.getByText((content, element) => {
+      return !!element && element.classList.contains('notification-summary') && /2/.test(content);
+    });
     expect(summaryElement).toBeInTheDocument();
     // The text is broken up as "2 notificaçãoões não lidas" in the DOM
     expect(summaryElement.textContent).toContain('notificação');
