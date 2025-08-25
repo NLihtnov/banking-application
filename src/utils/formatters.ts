@@ -1,7 +1,15 @@
-export const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat('pt-BR', {
+export const formatCurrency = (value: number, language: string = 'pt'): string => {
+  const currencyConfigs = {
+    pt: { locale: 'pt-BR', currency: 'BRL' },
+    en: { locale: 'en-US', currency: 'USD' },
+    es: { locale: 'es-ES', currency: 'EUR' },
+  };
+
+  const config = currencyConfigs[language as keyof typeof currencyConfigs] || currencyConfigs.pt;
+
+  return new Intl.NumberFormat(config.locale, {
     style: 'currency',
-    currency: 'BRL',
+    currency: config.currency,
   }).format(value);
 };
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector, useTranslation } from '../../hooks';
 import { getCurrentUser } from '../../store/authSlice';
 import { fetchTransactions, setFilters, clearTransactions } from '../../store/transactionSlice';
 import type { TransactionFilters } from '../../domain/repositories/ITransactionRepository';
+import { formatCurrency, formatDate } from '../../utils/formatters';
 
 import './History.css';
 
@@ -10,6 +11,7 @@ const History: React.FC = () => {
   const [localFilters, setLocalFilters] = useState<TransactionFilters>({});
 
   const dispatch = useAppDispatch();
+  const { t, currentLanguage } = useTranslation();
   const { user, loading: authLoading } = useAppSelector((state) => state.auth);
   const { transactions, loading: transactionLoading, filters } = useAppSelector((state) => state.transaction);
 
@@ -20,22 +22,7 @@ const History: React.FC = () => {
     dispatch(fetchTransactions(filters));
   }, [dispatch, user, filters]);
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value);
-  };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   const handleFilterChange = (key: keyof TransactionFilters, value: any) => {
     const newFilters = { ...localFilters, [key]: value };
@@ -196,7 +183,7 @@ const History: React.FC = () => {
                       </span>
                     </div>
                     <div className="history-transaction-amount">
-                      - {formatCurrency(transaction.amount)}
+                      - {formatCurrency(transaction.amount, currentLanguage)}
                     </div>
                   </div>
                   
@@ -225,7 +212,7 @@ const History: React.FC = () => {
                         {formatDate(transaction.date)}
                       </div>
                       <div className="history-transaction-balance">
-                        Saldo: {formatCurrency(transaction.balance || 0)}
+                        Saldo: {formatCurrency(transaction.balance || 0, currentLanguage)}
                       </div>
                     </div>
                   </div>

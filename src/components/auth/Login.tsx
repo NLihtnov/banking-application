@@ -1,6 +1,6 @@
 import React, { useEffect, memo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector, useForm } from '../../hooks';
+import { useAppDispatch, useAppSelector, useForm, useTranslation } from '../../hooks';
 import { login, clearError } from '../../store/authSlice';
 import { validateEmail } from '../../utils/validators';
 import './Auth.css';
@@ -8,6 +8,7 @@ import './Auth.css';
 const Login: React.FC = memo(() => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
 
   const { formData, errors, touched, handleChange, handleBlur, validateForm } = useForm(
@@ -15,7 +16,7 @@ const Login: React.FC = memo(() => {
     {
       email: {
         required: true,
-        custom: (value) => !validateEmail(value) ? 'Digite um email válido' : null,
+        custom: (value) => !validateEmail(value) ? t('invalidEmail') : null,
       },
       password: {
         required: true,
@@ -54,10 +55,10 @@ const Login: React.FC = memo(() => {
             className="logo-image"
           />
         </div>
-        <h2>Acesse sua conta</h2>
+        <h2>{t('login')}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('email')}</label>
             <input
               type="email"
               id="email"
@@ -66,13 +67,13 @@ const Login: React.FC = memo(() => {
               onChange={handleChange}
               onBlur={handleBlur}
               required
-              placeholder="Digite seu email"
+              placeholder={t('email')}
               className={touched.email && errors.email ? 'error-input' : ''}
             />
             {touched.email && errors.email && <div className="error-message">{errors.email}</div>}
           </div>
           <div className="form-group">
-            <label htmlFor="password">Senha</label>
+            <label htmlFor="password">{t('password')}</label>
             <input
               type="password"
               id="password"
@@ -81,19 +82,19 @@ const Login: React.FC = memo(() => {
               onChange={handleChange}
               onBlur={handleBlur}
               required
-              placeholder="Digite sua senha"
+              placeholder={t('password')}
               className={touched.password && errors.password ? 'error-input' : ''}
             />
             {touched.password && errors.password && <div className="error-message">{errors.password}</div>}
           </div>
           {error && <div className="error-message global-error">{error}</div>}
           <button type="submit" disabled={loading} className="auth-button">
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? t('loading') : t('login')}
           </button>
         </form>
         <div className="auth-links">
           <p>
-            Não tem uma conta? <Link to="/register">Registre-se</Link>
+            {t('noAccount')} <Link to="/register">{t('register')}</Link>
           </p>
         </div>
       </div>

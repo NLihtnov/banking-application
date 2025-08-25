@@ -1,0 +1,322 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import Backend from 'i18next-http-backend';
+
+i18n
+  .use(Backend)
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    fallbackLng: 'pt',
+    debug: process.env.NODE_ENV === 'development',
+    
+    interpolation: {
+      escapeValue: false, // React already escapes values
+    },
+    
+    backend: {
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
+    },
+    
+    detection: {
+      order: ['localStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage'],
+    },
+    
+    resources: {
+      pt: {
+        translation: {
+          // Common
+          loading: 'Carregando...',
+          error: 'Erro',
+          success: 'Sucesso',
+          cancel: 'Cancelar',
+          save: 'Salvar',
+          edit: 'Editar',
+          delete: 'Excluir',
+          confirm: 'Confirmar',
+          back: 'Voltar',
+          next: 'Próximo',
+          previous: 'Anterior',
+          
+          // Navigation
+          home: 'Início',
+          transactions: 'Transações',
+          history: 'Histórico',
+          profile: 'Perfil',
+          logout: 'Sair',
+          
+          // Auth
+          login: 'Entrar',
+          register: 'Cadastrar',
+          email: 'E-mail',
+          password: 'Senha',
+          confirmPassword: 'Confirmar Senha',
+          name: 'Nome',
+          welcome: 'Bem-vindo',
+          loginSuccess: 'Login realizado com sucesso',
+          registerSuccess: 'Cadastro realizado com sucesso',
+          logoutSuccess: 'Logout realizado com sucesso',
+          invalidCredentials: 'Credenciais inválidas',
+          emailRequired: 'E-mail é obrigatório',
+          passwordRequired: 'Senha é obrigatória',
+          nameRequired: 'Nome é obrigatório',
+          passwordsDoNotMatch: 'Senhas não coincidem',
+          noAccount: 'Não tem uma conta?',
+          
+          // Home
+          welcomeMessage: 'Bem-vindo, {{name}}!',
+          manageFinances: 'Gerencie suas finanças de forma simples e segura',
+          currentBalance: 'Saldo Atual',
+          checkingAccount: 'Conta Corrente',
+          lastUpdate: 'Última atualização',
+          quickActions: 'Ações Rápidas',
+          newTransaction: 'Nova Transação',
+          viewHistory: 'Ver Histórico',
+          recentTransactions: 'Últimas Transações',
+          totalTransactions: '{{count}} transações no total',
+          loadingTransactions: 'Carregando transações...',
+          noTransactions: 'Nenhuma transação encontrada',
+          
+          // Transactions
+          transaction: 'Transação',
+          amount: 'Valor',
+          recipient: 'Destinatário',
+          recipientName: 'Nome do Destinatário',
+          date: 'Data',
+          type: 'Tipo',
+          description: 'Descrição',
+          transfer: 'Transferência',
+          deposit: 'Depósito',
+          withdrawal: 'Saque',
+          transactionSuccess: 'Transação realizada com sucesso',
+          transactionError: 'Erro ao realizar transação',
+          insufficientFunds: 'Saldo insuficiente',
+          invalidAmount: 'Valor inválido',
+          recipientRequired: 'Destinatário é obrigatório',
+          amountRequired: 'Valor é obrigatório',
+          
+          // History
+          transactionHistory: 'Histórico de Transações',
+          filterByType: 'Filtrar por tipo',
+          filterByDate: 'Filtrar por data',
+          allTypes: 'Todos os tipos',
+          from: 'De',
+          to: 'Até',
+          applyFilter: 'Aplicar Filtro',
+          clearFilter: 'Limpar Filtro',
+          
+          // Notifications
+          notifications: 'Notificações',
+          noNotifications: 'Nenhuma notificação',
+          markAsRead: 'Marcar como lida',
+          markAllAsRead: 'Marcar todas como lidas',
+          
+          // Validation
+          required: 'Campo obrigatório',
+          invalidEmail: 'E-mail inválido',
+          minLength: 'Mínimo de {{min}} caracteres',
+          maxLength: 'Máximo de {{max}} caracteres',
+          minValue: 'Valor mínimo: {{min}}',
+          maxValue: 'Valor máximo: {{max}}',
+        }
+      },
+      en: {
+        translation: {
+          // Common
+          loading: 'Loading...',
+          error: 'Error',
+          success: 'Success',
+          cancel: 'Cancel',
+          save: 'Save',
+          edit: 'Edit',
+          delete: 'Delete',
+          confirm: 'Confirm',
+          back: 'Back',
+          next: 'Next',
+          previous: 'Previous',
+          
+          // Navigation
+          home: 'Home',
+          transactions: 'Transactions',
+          history: 'History',
+          profile: 'Profile',
+          logout: 'Logout',
+          
+          // Auth
+          login: 'Login',
+          register: 'Register',
+          email: 'Email',
+          password: 'Password',
+          confirmPassword: 'Confirm Password',
+          name: 'Name',
+          welcome: 'Welcome',
+          loginSuccess: 'Login successful',
+          registerSuccess: 'Registration successful',
+          logoutSuccess: 'Logout successful',
+          invalidCredentials: 'Invalid credentials',
+          emailRequired: 'Email is required',
+          passwordRequired: 'Password is required',
+          nameRequired: 'Name is required',
+          passwordsDoNotMatch: 'Passwords do not match',
+          noAccount: "Don't have an account?",
+          
+          // Home
+          welcomeMessage: 'Welcome, {{name}}!',
+          manageFinances: 'Manage your finances simply and securely',
+          currentBalance: 'Current Balance',
+          checkingAccount: 'Checking Account',
+          lastUpdate: 'Last update',
+          quickActions: 'Quick Actions',
+          newTransaction: 'New Transaction',
+          viewHistory: 'View History',
+          recentTransactions: 'Recent Transactions',
+          totalTransactions: '{{count}} transactions total',
+          loadingTransactions: 'Loading transactions...',
+          noTransactions: 'No transactions found',
+          
+          // Transactions
+          transaction: 'Transaction',
+          amount: 'Amount',
+          recipient: 'Recipient',
+          recipientName: 'Recipient Name',
+          date: 'Date',
+          type: 'Type',
+          description: 'Description',
+          transfer: 'Transfer',
+          deposit: 'Deposit',
+          withdrawal: 'Withdrawal',
+          transactionSuccess: 'Transaction successful',
+          transactionError: 'Transaction error',
+          insufficientFunds: 'Insufficient funds',
+          invalidAmount: 'Invalid amount',
+          recipientRequired: 'Recipient is required',
+          amountRequired: 'Amount is required',
+          
+          // History
+          transactionHistory: 'Transaction History',
+          filterByType: 'Filter by type',
+          filterByDate: 'Filter by date',
+          allTypes: 'All types',
+          from: 'From',
+          to: 'To',
+          applyFilter: 'Apply Filter',
+          clearFilter: 'Clear Filter',
+          
+          // Notifications
+          notifications: 'Notifications',
+          noNotifications: 'No notifications',
+          markAsRead: 'Mark as read',
+          markAllAsRead: 'Mark all as read',
+          
+          // Validation
+          required: 'Required field',
+          invalidEmail: 'Invalid email',
+          minLength: 'Minimum {{min}} characters',
+          maxLength: 'Maximum {{max}} characters',
+          minValue: 'Minimum value: {{min}}',
+          maxValue: 'Maximum value: {{max}}',
+        }
+      },
+      es: {
+        translation: {
+          // Common
+          loading: 'Cargando...',
+          error: 'Error',
+          success: 'Éxito',
+          cancel: 'Cancelar',
+          save: 'Guardar',
+          edit: 'Editar',
+          delete: 'Eliminar',
+          confirm: 'Confirmar',
+          back: 'Atrás',
+          next: 'Siguiente',
+          previous: 'Anterior',
+          
+          // Navigation
+          home: 'Inicio',
+          transactions: 'Transacciones',
+          history: 'Historial',
+          profile: 'Perfil',
+          logout: 'Cerrar sesión',
+          
+          // Auth
+          login: 'Iniciar sesión',
+          register: 'Registrarse',
+          email: 'Correo electrónico',
+          password: 'Contraseña',
+          confirmPassword: 'Confirmar contraseña',
+          name: 'Nombre',
+          welcome: 'Bienvenido',
+          loginSuccess: 'Inicio de sesión exitoso',
+          registerSuccess: 'Registro exitoso',
+          logoutSuccess: 'Cierre de sesión exitoso',
+          invalidCredentials: 'Credenciales inválidas',
+          emailRequired: 'El correo electrónico es obligatorio',
+          passwordRequired: 'La contraseña es obligatoria',
+          nameRequired: 'El nombre es obligatorio',
+          passwordsDoNotMatch: 'Las contraseñas no coinciden',
+          noAccount: '¿No tienes una cuenta?',
+          
+          // Home
+          welcomeMessage: '¡Bienvenido, {{name}}!',
+          manageFinances: 'Gestiona tus finanzas de forma simple y segura',
+          currentBalance: 'Saldo Actual',
+          checkingAccount: 'Cuenta Corriente',
+          lastUpdate: 'Última actualización',
+          quickActions: 'Acciones Rápidas',
+          newTransaction: 'Nueva Transacción',
+          viewHistory: 'Ver Historial',
+          recentTransactions: 'Transacciones Recientes',
+          totalTransactions: '{{count}} transacciones en total',
+          loadingTransactions: 'Cargando transacciones...',
+          noTransactions: 'No se encontraron transacciones',
+          
+          // Transactions
+          transaction: 'Transacción',
+          amount: 'Cantidad',
+          recipient: 'Destinatario',
+          recipientName: 'Nombre del Destinatario',
+          date: 'Fecha',
+          type: 'Tipo',
+          description: 'Descripción',
+          transfer: 'Transferencia',
+          deposit: 'Depósito',
+          withdrawal: 'Retiro',
+          transactionSuccess: 'Transacción exitosa',
+          transactionError: 'Error en la transacción',
+          insufficientFunds: 'Fondos insuficientes',
+          invalidAmount: 'Cantidad inválida',
+          recipientRequired: 'El destinatario es obligatorio',
+          amountRequired: 'La cantidad es obligatoria',
+          
+          // History
+          transactionHistory: 'Historial de Transacciones',
+          filterByType: 'Filtrar por tipo',
+          filterByDate: 'Filtrar por fecha',
+          allTypes: 'Todos los tipos',
+          from: 'Desde',
+          to: 'Hasta',
+          applyFilter: 'Aplicar Filtro',
+          clearFilter: 'Limpiar Filtro',
+          
+          // Notifications
+          notifications: 'Notificaciones',
+          noNotifications: 'Sin notificaciones',
+          markAsRead: 'Marcar como leída',
+          markAllAsRead: 'Marcar todas como leídas',
+          
+          // Validation
+          required: 'Campo obligatorio',
+          invalidEmail: 'Correo electrónico inválido',
+          minLength: 'Mínimo {{min}} caracteres',
+          maxLength: 'Máximo {{max}} caracteres',
+          minValue: 'Valor mínimo: {{min}}',
+          maxValue: 'Valor máximo: {{max}}',
+        }
+      }
+    }
+  });
+
+export default i18n;

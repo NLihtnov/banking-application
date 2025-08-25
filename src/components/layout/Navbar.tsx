@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector, useTranslation } from '../../hooks';
 import { logout } from '../../store/authSlice';
 import { NotificationBell } from '../notifications/NotificationBell';
 import { NotificationPanel } from '../notifications/NotificationPanel';
+import LanguageSelector from '../common/LanguageSelector';
 
 import './Navbar.css';
 
@@ -11,6 +12,7 @@ const Navbar: React.FC = memo(() => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const handleLogout = () => {
@@ -41,21 +43,22 @@ const Navbar: React.FC = memo(() => {
         
         <div className="navbar-menu">
           <Link to="/home" className="navbar-link" onClick={closeMenu}>
-            Home
+            {t('home')}
           </Link>
           <Link to="/transaction" className="navbar-link" onClick={closeMenu}>
-            Transações
+            {t('transactions')}
           </Link>
           <Link to="/history" className="navbar-link" onClick={closeMenu}>
-            Histórico
+            {t('history')}
           </Link>
         </div>
         
         <div className="navbar-user">
           <NotificationBell />
-          <span className="user-name">Olá, {user?.name}</span>
+          <LanguageSelector />
+          <span className="user-name">{t('welcome')}, {user?.name}</span>
           <button onClick={handleLogout} className="logout-button">
-            Sair
+            {t('logout')}
           </button>
         </div>
 
@@ -75,18 +78,18 @@ const Navbar: React.FC = memo(() => {
       <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
         <div className="mobile-menu-content">
           <Link to="/home" className="mobile-menu-link" onClick={closeMenu}>
-            Home
+            {t('home')}
           </Link>
           <Link to="/transaction" className="mobile-menu-link" onClick={closeMenu}>
-            Transações
+            {t('transactions')}
           </Link>
           <Link to="/history" className="mobile-menu-link" onClick={closeMenu}>
-            Histórico
+            {t('history')}
           </Link>
           <div className="mobile-menu-user">
-            <span className="mobile-user-name">Olá, {user?.name}</span>
+            <span className="mobile-user-name">{t('welcome')}, {user?.name}</span>
             <button onClick={handleLogout} className="mobile-logout-button">
-              Sair
+              {t('logout')}
             </button>
           </div>
         </div>

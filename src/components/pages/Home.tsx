@@ -1,6 +1,6 @@
 import React, { useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector, useTranslation } from '../../hooks';
 import { getCurrentUser } from '../../store/authSlice';
 import { fetchTransactions } from '../../store/transactionSlice';
 import { formatCurrency, formatDate } from '../../utils/formatters';
@@ -9,6 +9,7 @@ import './Home.css';
 const Home: React.FC = memo(() => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { t, currentLanguage } = useTranslation();
   const { user, loading: authLoading } = useAppSelector((state) => state.auth);
   const { transactions, loading: transactionLoading } = useAppSelector((state) => state.transaction);
 
@@ -26,7 +27,7 @@ const Home: React.FC = memo(() => {
   if (authLoading) {
     return (
       <div className="home-container">
-        <div className="loading">Carregando...</div>
+        <div className="loading">{t('loading')}</div>
       </div>
     );
   }
@@ -34,48 +35,48 @@ const Home: React.FC = memo(() => {
   return (
     <div className="home-container">
       <div className="home-header">
-        <h1>Bem-vindo, {user?.name}!</h1>
-        <p>Gerencie suas finanças de forma simples e segura</p>
+        <h1>{t('welcomeMessage', { name: user?.name })}</h1>
+        <p>{t('manageFinances')}</p>
       </div>
 
       <div className="home-content">
         <div className="balance-card">
           <div className="balance-header">
-            <h2>Saldo Atual</h2>
+            <h2>{t('currentBalance')}</h2>
             <div className="balance-amount">
-              {formatCurrency(user?.balance || 0)}
+              {formatCurrency(user?.balance || 0, currentLanguage)}
             </div>
           </div>
           <div className="balance-info">
-            <p>Conta Corrente</p>
-            <small>Última atualização: {new Date().toLocaleString('pt-BR')}</small>
+            <p>{t('checkingAccount')}</p>
+            <small>{t('lastUpdate')}: {new Date().toLocaleString()}</small>
           </div>
         </div>
 
         <div className="quick-actions">
-          <h3>Ações Rápidas</h3>
+          <h3>{t('quickActions')}</h3>
           <div className="action-buttons">
             <button onClick={() => navigate('/transaction')} className="action-button primary">
               <span className="action-icon">💸</span>
-              <span>Nova Transação</span>
+              <span>{t('newTransaction')}</span>
             </button>
             <button onClick={() => navigate('/history')} className="action-button secondary">
               <span className="action-icon">📊</span>
-              <span>Ver Histórico</span>
+              <span>{t('viewHistory')}</span>
             </button>
           </div>
         </div>
 
         <div className="recent-transactions">
           <div className="section-header">
-            <h3>Últimas Transações</h3>
+            <h3>{t('recentTransactions')}</h3>
             <span className="transaction-count">
-              {transactions.length} transações no total
+              {t('totalTransactions', { count: transactions.length })}
             </span>
           </div>
 
           {transactionLoading ? (
-            <div className="loading">Carregando transações...</div>
+            <div className="loading">{t('loadingTransactions')}</div>
           ) : recentTransactions.length > 0 ? (
             <div className="transactions-list">
               {recentTransactions.map((transaction) => (
@@ -96,7 +97,7 @@ const Home: React.FC = memo(() => {
                     </div>
                   </div>
                   <div className="home-transaction-amount">
-                    - {formatCurrency(transaction.amount)}
+                    - {formatCurrency(transaction.amount, currentLanguage)}
                   </div>
                 </div>
               ))}

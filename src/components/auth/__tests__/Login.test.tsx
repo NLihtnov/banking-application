@@ -1,22 +1,36 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../../../i18n';
 import { renderWithProviders } from '../../../test-utils';
 import Login from '../Login';
 
 describe('Login Component', () => {
+  beforeEach(() => {
+    i18n.changeLanguage('pt');
+  });
+
   test('renders login form', () => {
-    renderWithProviders(<Login />);
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Login />
+      </I18nextProvider>
+    );
     
-    expect(screen.getByText('Acesse sua conta')).toBeInTheDocument();
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/senha/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /entrar/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Entrar/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/E-mail/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Senha/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Entrar/i })).toBeInTheDocument();
   });
 
   test('shows validation errors for empty fields', async () => {
-    renderWithProviders(<Login />);
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Login />
+      </I18nextProvider>
+    );
     
-    const submitButton = screen.getByRole('button', { name: /entrar/i });
+    const submitButton = screen.getByRole('button', { name: /Entrar/i });
     fireEvent.click(submitButton);
     
     // Como o componente não tem validação implementada, vamos apenas verificar se o botão existe
@@ -24,10 +38,14 @@ describe('Login Component', () => {
   });
 
   test('allows user to input email and password', () => {
-    renderWithProviders(<Login />);
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Login />
+      </I18nextProvider>
+    );
     
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/senha/i);
+    const emailInput = screen.getByLabelText(/E-mail/i);
+    const passwordInput = screen.getByLabelText(/Senha/i);
     
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
@@ -37,9 +55,13 @@ describe('Login Component', () => {
   });
 
   test('shows link to register page', () => {
-    renderWithProviders(<Login />);
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Login />
+      </I18nextProvider>
+    );
     
-    const registerLink = screen.getByText(/registre-se/i);
+    const registerLink = screen.getByText(/Cadastrar/i);
     expect(registerLink).toBeInTheDocument();
     expect(registerLink.closest('a')).toHaveAttribute('href', '/register');
   });

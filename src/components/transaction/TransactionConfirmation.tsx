@@ -1,5 +1,7 @@
 import React from 'react';
+import { useTranslation } from '../../hooks';
 import { CreateTransactionData } from '../../domain/entities/types';
+import { formatCurrency } from '../../utils/formatters';
 import './TransactionConfirmation.css';
 
 interface TransactionConfirmationProps {
@@ -15,12 +17,7 @@ export const TransactionConfirmation: React.FC<TransactionConfirmationProps> = (
   onCancel,
   loading = false
 }) => {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
+  const { t, currentLanguage } = useTranslation();
 
   const getTransactionIcon = (type: string) => {
     switch (type) {
@@ -61,7 +58,7 @@ export const TransactionConfirmation: React.FC<TransactionConfirmationProps> = (
             <div className="detail-row">
               <span className="detail-label">Valor:</span>
               <span className="detail-value amount">
-                {formatCurrency(transactionData.amount)}
+                {formatCurrency(transactionData.amount, currentLanguage)}
               </span>
             </div>
 

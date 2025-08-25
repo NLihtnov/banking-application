@@ -1,5 +1,7 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../../../i18n';
 import { renderWithProviders } from '../../../test-utils';
 import Home from '../Home';
 import { getCurrentUser } from '../../../store/authSlice';
@@ -16,19 +18,25 @@ jest.mock('react-router-dom', () => ({
 describe('Home Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    i18n.changeLanguage('pt');
   });
 
   test('renders home page with loading state', () => {
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: null,
-          loading: true,
-          error: null,
-          isAuthenticated: false,
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Home />
+      </I18nextProvider>,
+      {
+        preloadedState: {
+          auth: {
+            user: null,
+            loading: true,
+            error: null,
+            isAuthenticated: false,
+          },
         },
-      },
-    });
+      }
+    );
 
     expect(screen.getByText('Carregando...')).toBeInTheDocument();
   });
@@ -62,22 +70,27 @@ describe('Home Component', () => {
       },
     ];
 
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: mockUser,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Home />
+      </I18nextProvider>,
+      {
+        preloadedState: {
+          auth: {
+            user: mockUser,
+            loading: false,
+            error: null,
+            isAuthenticated: true,
+          },
+          transaction: {
+            transactions: mockTransactions,
+            loading: false,
+            error: null,
+            filters: {},
+          },
         },
-        transaction: {
-          transactions: mockTransactions,
-          loading: false,
-          error: null,
-          filters: {},
-        },
-      },
-    });
+      }
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Bem-vindo, João Silva!')).toBeInTheDocument();
@@ -95,22 +108,27 @@ describe('Home Component', () => {
   });
 
   test('renders home page without user data', async () => {
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: null,
-          loading: false,
-          error: null,
-          isAuthenticated: false,
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Home />
+      </I18nextProvider>,
+      {
+        preloadedState: {
+          auth: {
+            user: null,
+            loading: false,
+            error: null,
+            isAuthenticated: false,
+          },
+          transaction: {
+            transactions: [],
+            loading: false,
+            error: null,
+            filters: {},
+          },
         },
-        transaction: {
-          transactions: [],
-          loading: false,
-          error: null,
-          filters: {},
-        },
-      },
-    });
+      }
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Bem-vindo, !')).toBeInTheDocument();
@@ -126,22 +144,27 @@ describe('Home Component', () => {
       balance: 5000.00,
     };
 
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: mockUser,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Home />
+      </I18nextProvider>,
+      {
+        preloadedState: {
+          auth: {
+            user: mockUser,
+            loading: false,
+            error: null,
+            isAuthenticated: true,
+          },
+          transaction: {
+            transactions: [],
+            loading: true,
+            error: null,
+            filters: {},
+          },
         },
-        transaction: {
-          transactions: [],
-          loading: true,
-          error: null,
-          filters: {},
-        },
-      },
-    });
+      }
+    );
 
     expect(screen.getByText('Carregando transações...')).toBeInTheDocument();
   });
@@ -154,22 +177,27 @@ describe('Home Component', () => {
       balance: 5000.00,
     };
 
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: mockUser,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Home />
+      </I18nextProvider>,
+      {
+        preloadedState: {
+          auth: {
+            user: mockUser,
+            loading: false,
+            error: null,
+            isAuthenticated: true,
+          },
+          transaction: {
+            transactions: [],
+            loading: false,
+            error: null,
+            filters: {},
+          },
         },
-        transaction: {
-          transactions: [],
-          loading: false,
-          error: null,
-          filters: {},
-        },
-      },
-    });
+      }
+    );
 
     await waitFor(() => {
       expect(screen.getByText('0 transações no total')).toBeInTheDocument();
@@ -243,22 +271,27 @@ describe('Home Component', () => {
       },
     ];
 
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: mockUser,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Home />
+      </I18nextProvider>,
+      {
+        preloadedState: {
+          auth: {
+            user: mockUser,
+            loading: false,
+            error: null,
+            isAuthenticated: true,
+          },
+          transaction: {
+            transactions: mockTransactions,
+            loading: false,
+            error: null,
+            filters: {},
+          },
         },
-        transaction: {
-          transactions: mockTransactions,
-          loading: false,
-          error: null,
-          filters: {},
-        },
-      },
-    });
+      }
+    );
 
     // Verifica se apenas as 5 primeiras transações são exibidas
     await waitFor(() => {
@@ -281,22 +314,27 @@ describe('Home Component', () => {
       balance: 5000.00,
     };
 
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: mockUser,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Home />
+      </I18nextProvider>,
+      {
+        preloadedState: {
+          auth: {
+            user: mockUser,
+            loading: false,
+            error: null,
+            isAuthenticated: true,
+          },
+          transaction: {
+            transactions: [],
+            loading: false,
+            error: null,
+            filters: {},
+          },
         },
-        transaction: {
-          transactions: [],
-          loading: false,
-          error: null,
-          filters: {},
-        },
-      },
-    });
+      }
+    );
 
     const novaTransacaoButton = screen.getByText('Nova Transação');
     fireEvent.click(novaTransacaoButton);
@@ -312,22 +350,27 @@ describe('Home Component', () => {
       balance: 5000.00,
     };
 
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: mockUser,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
+    renderWithProviders(
+      <I18nextProvider i18n={i18n}>
+        <Home />
+      </I18nextProvider>,
+      {
+        preloadedState: {
+          auth: {
+            user: mockUser,
+            loading: false,
+            error: null,
+            isAuthenticated: true,
+          },
+          transaction: {
+            transactions: [],
+            loading: false,
+            error: null,
+            filters: {},
+          },
         },
-        transaction: {
-          transactions: [],
-          loading: false,
-          error: null,
-          filters: {},
-        },
-      },
-    });
+      }
+    );
 
     const verHistoricoButton = screen.getByText('Ver Histórico');
     fireEvent.click(verHistoricoButton);
