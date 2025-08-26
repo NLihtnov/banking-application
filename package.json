@@ -12,7 +12,7 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "axios": "^1.4.0",
-    "i18next": "^25.4.2",
+    "i18next": "^25.4.1",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",
     "jose": "^6.0.13",
