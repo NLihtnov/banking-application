@@ -6,7 +6,7 @@ import { NotificationBell } from '../NotificationBell';
 import notificationReducer from '../../../store/notificationSlice';
 import authReducer from '../../../store/authSlice';
 
-// Mock the hooks
+
 const mockDispatch = jest.fn();
 const mockSelector = jest.fn();
 
@@ -35,7 +35,7 @@ describe('NotificationBell', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Default mock implementation
+    
     mockSelector.mockImplementation((selector: any) => {
       const mockState = {
         notifications: {

@@ -33,7 +33,7 @@ describe('Login Component', () => {
     const submitButton = screen.getByRole('button', { name: /Entrar/i });
     fireEvent.click(submitButton);
     
-    // Como o componente não tem validação implementada, vamos apenas verificar se o botão existe
+    
     expect(submitButton).toBeInTheDocument();
   });
 

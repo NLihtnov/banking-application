@@ -1,14 +1,14 @@
 import { mockApi, mockData, setupApiMocks, clearApiMocks } from '../__mocks__/api';
 
-// Teste de integração com as APIs simuladas
+
 describe('API Integration Tests', () => {
   beforeEach(() => {
-    // Configura os mocks da API antes de cada teste
+    
     setupApiMocks();
   });
 
   afterEach(() => {
-    // Limpa os mocks após cada teste
+    
     clearApiMocks();
   });
 
@@ -161,14 +161,14 @@ describe('API Integration Tests', () => {
 
   describe('Data Consistency', () => {
     it('should maintain data consistency across API calls', async () => {
-      // Verifica estado inicial
+      
       const initialUsers = await mockApi.users.get();
       const initialTransactions = await mockApi.transactions.get();
       
       expect(initialUsers.data).toHaveLength(mockData.users.length);
       expect(initialTransactions.data).toHaveLength(mockData.transactions.length);
       
-      // Cria um novo usuário
+      
       const newUser = {
         name: 'Consistency Test User',
         email: 'consistency@test.com',
@@ -178,11 +178,11 @@ describe('API Integration Tests', () => {
       
       await mockApi.users.register(newUser);
       
-      // Verifica se o usuário foi adicionado
-      const updatedUsers = await mockApi.users.get();
-      expect(updatedUsers.data).toHaveLength(3); // 2 usuários iniciais + 1 novo
       
-      // Verifica se o usuário pode fazer login
+      const updatedUsers = await mockApi.users.get();
+      expect(updatedUsers.data).toHaveLength(3); 
+      
+      
       const loginResponse = await mockApi.users.login({
         email: newUser.email,
         password: newUser.password

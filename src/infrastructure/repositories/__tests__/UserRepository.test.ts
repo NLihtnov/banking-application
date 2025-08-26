@@ -2,7 +2,7 @@ import { UserRepository } from '../UserRepository';
 import { ApiClient } from '../../api/ApiClient';
 import { User } from '../../../domain/entities/User';
 
-// Mock do ApiClient
+
 jest.mock('../../api/ApiClient');
 
 describe('UserRepository', () => {
@@ -82,7 +82,7 @@ describe('UserRepository', () => {
       const result = await userRepository.findByEmail('joao@example.com');
 
       expect(result).toBeInstanceOf(User);
-      expect(result?.id).toBe(1); // Retorna o primeiro usuário encontrado
+      expect(result?.id).toBe(1); 
       expect(result?.name).toBe('João Silva');
     });
   });
@@ -351,7 +351,7 @@ describe('UserRepository', () => {
 
   describe('integration scenarios', () => {
     test('should handle complete user lifecycle', async () => {
-      // Create user
+      
       const createUserData = {
         id: 1,
         name: 'João Silva',
@@ -366,17 +366,17 @@ describe('UserRepository', () => {
       expect(createdUser.id).toBe(1);
       expect(createdUser.balance).toBe(1000.00);
 
-      // Find user by email
+      
       mockApiClient.get.mockResolvedValue([createUserData]);
       const foundByEmail = await userRepository.findByEmail('joao@example.com');
       expect(foundByEmail?.id).toBe(1);
 
-      // Find user by id
+      
       mockApiClient.get.mockResolvedValue(createUserData);
       const foundById = await userRepository.findById(1);
       expect(foundById?.id).toBe(1);
 
-      // Update user
+      
       const updateUserData = {
         id: 1,
         name: 'João Silva Updated',
@@ -390,24 +390,24 @@ describe('UserRepository', () => {
       const result = await userRepository.update(updatedUser);
       expect(result.balance).toBe(2000.00);
 
-      // Update balance
+      
       mockApiClient.patch.mockResolvedValue({});
       await userRepository.updateBalance(1, 3000.00);
       expect(mockApiClient.patch).toHaveBeenCalledWith('/users/1', { balance: 3000.00 });
     });
 
     test('should handle error scenarios in user lifecycle', async () => {
-      // Try to find non-existent user by email
+      
       mockApiClient.get.mockResolvedValue([]);
       const notFoundByEmail = await userRepository.findByEmail('nonexistent@example.com');
       expect(notFoundByEmail).toBeNull();
 
-      // Try to find non-existent user by id
+      
       mockApiClient.get.mockRejectedValue(new Error('Not Found'));
       const notFoundById = await userRepository.findById(999);
       expect(notFoundById).toBeNull();
 
-      // Try to create user with API error
+      
       const userData = {
         id: 1,
         name: 'João Silva',

@@ -7,7 +7,7 @@ import notificationReducer from '../../../store/notificationSlice';
 import authReducer from '../../../store/authSlice';
 import { NotificationData } from '../../../services/WebSocketService';
 
-// Mock the useNotifications hook
+
 const mockMarkNotificationAsRead = jest.fn();
 const mockMarkAllNotificationsAsRead = jest.fn();
 const mockSendTestNotification = jest.fn();
@@ -25,7 +25,7 @@ jest.mock('../../../hooks/useNotifications', () => ({
 
 const mockUseNotifications = require('../../../hooks/useNotifications').useNotifications;
 
-// Mock the hooks
+
 const mockDispatch = jest.fn();
 const mockSelector = jest.fn();
 
@@ -74,7 +74,7 @@ describe('NotificationPanel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Reset useNotifications mock to default
+    
     mockUseNotifications.mockReturnValue({
       notifications: [],
       unreadCount: 0,
@@ -84,7 +84,7 @@ describe('NotificationPanel', () => {
       sendTestNotification: mockSendTestNotification,
     });
     
-    // Default mock implementation
+    
     mockSelector.mockImplementation((selector: any) => {
       const mockState = {
         notifications: {
@@ -146,7 +146,7 @@ describe('NotificationPanel', () => {
   });
 
   it('should show connected status when isConnected is true', () => {
-    // Mock useNotifications to return connected state
+    
     mockUseNotifications.mockReturnValue({
       notifications: [],
       unreadCount: 0,
@@ -176,7 +176,7 @@ describe('NotificationPanel', () => {
   });
 
   it('should show notifications when they exist', () => {
-    // Mock useNotifications to return notifications
+    
     mockUseNotifications.mockReturnValue({
       notifications: [mockNotification],
       unreadCount: 1,
@@ -196,7 +196,7 @@ describe('NotificationPanel', () => {
   });
 
   it('should show mark all read button when unread count > 0', () => {
-    // Mock useNotifications to return unread notifications
+    
     mockUseNotifications.mockReturnValue({
       notifications: [mockNotification],
       unreadCount: 1,
@@ -224,7 +224,7 @@ describe('NotificationPanel', () => {
   });
 
   it('should call markAllNotificationsAsRead when mark all read button is clicked', () => {
-    // Mock useNotifications to return unread notifications
+    
     mockUseNotifications.mockReturnValue({
       notifications: [mockNotification],
       unreadCount: 1,
@@ -294,7 +294,7 @@ describe('NotificationPanel', () => {
   });
 
   it('should call markNotificationAsRead when unread notification is clicked', () => {
-    // Mock useNotifications to return unread notification
+    
     mockUseNotifications.mockReturnValue({
       notifications: [mockNotification],
       unreadCount: 1,
@@ -316,7 +316,7 @@ describe('NotificationPanel', () => {
   });
 
   it('should not call markNotificationAsRead when read notification is clicked', () => {
-    // Mock useNotifications to return read notification
+    
     mockUseNotifications.mockReturnValue({
       notifications: [mockReadNotification],
       unreadCount: 0,
@@ -338,7 +338,7 @@ describe('NotificationPanel', () => {
   });
 
   it('should call removeNotification when remove button is clicked', () => {
-    // Mock useNotifications to return notification
+    
     mockUseNotifications.mockReturnValue({
       notifications: [mockNotification],
       unreadCount: 1,
@@ -360,7 +360,7 @@ describe('NotificationPanel', () => {
   });
 
   it('should show correct priority icons', () => {
-    // Mock useNotifications to return notifications with different priorities
+    
     mockUseNotifications.mockReturnValue({
       notifications: [
         { ...mockNotification, priority: 'urgent' },
@@ -380,14 +380,14 @@ describe('NotificationPanel', () => {
     
     render(<NotificationPanel />, { wrapper });
     
-    expect(screen.getByText('🚨')).toBeInTheDocument(); // urgent
-    expect(screen.getByText('❗')).toBeInTheDocument(); // high
-    expect(screen.getByText('📢')).toBeInTheDocument(); // medium
-    expect(screen.getByText('💡')).toBeInTheDocument(); // low
+    expect(screen.getByText('🚨')).toBeInTheDocument(); 
+    expect(screen.getByText('❗')).toBeInTheDocument(); 
+    expect(screen.getByText('📢')).toBeInTheDocument(); 
+    expect(screen.getByText('💡')).toBeInTheDocument(); 
   });
 
   it('should show correct type icons', () => {
-    // Mock useNotifications to return notifications with different types
+    
     mockUseNotifications.mockReturnValue({
       notifications: [
         { ...mockNotification, type: 'transaction' },
@@ -407,10 +407,10 @@ describe('NotificationPanel', () => {
     
     render(<NotificationPanel />, { wrapper });
     
-    expect(screen.getByText('💸')).toBeInTheDocument(); // transaction
-    expect(screen.getByText('💰')).toBeInTheDocument(); // balance_update
-    expect(screen.getByText('🔒')).toBeInTheDocument(); // security_alert
-    expect(screen.getByText('⚙️')).toBeInTheDocument(); // system_message
+    expect(screen.getByText('💸')).toBeInTheDocument(); 
+    expect(screen.getByText('💰')).toBeInTheDocument(); 
+    expect(screen.getByText('🔒')).toBeInTheDocument(); 
+    expect(screen.getByText('⚙️')).toBeInTheDocument(); 
   });
 
   it('should show correct time ago format', () => {
@@ -419,7 +419,7 @@ describe('NotificationPanel', () => {
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-    // Mock useNotifications to return notifications with different timestamps
+    
     mockUseNotifications.mockReturnValue({
       notifications: [
         { ...mockNotification, timestamp: now.toISOString() },
@@ -446,7 +446,7 @@ describe('NotificationPanel', () => {
   });
 
   it('should show unread count summary', () => {
-    // Mock useNotifications to return unread notifications
+    
     mockUseNotifications.mockReturnValue({
       notifications: [mockNotification],
       unreadCount: 1,
@@ -465,7 +465,7 @@ describe('NotificationPanel', () => {
   });
 
   it('should show plural form for multiple unread notifications', () => {
-    // Mock useNotifications to return multiple unread notifications
+    
     mockUseNotifications.mockReturnValue({
       notifications: [mockNotification, { ...mockNotification, id: 'test-2' }],
       unreadCount: 2,
@@ -480,19 +480,19 @@ describe('NotificationPanel', () => {
     
     render(<NotificationPanel />, { wrapper });
     
-    // Scope to the summary element to avoid matching times like "602d atrás"
+    
     const summaryElement = screen.getByText((content, element) => {
       return !!element && element.classList.contains('notification-summary') && /2/.test(content);
     });
     expect(summaryElement).toBeInTheDocument();
-    // The text is broken up as "2 notificaçãoões não lidas" in the DOM
+    
     expect(summaryElement.textContent).toContain('notificação');
     expect(summaryElement.textContent).toContain('ões');
     expect(summaryElement.textContent).toContain('não lidas');
   });
 
   it('should apply correct CSS classes for notification items', () => {
-    // Mock useNotifications to return notifications
+    
     mockUseNotifications.mockReturnValue({
       notifications: [mockNotification, mockReadNotification],
       unreadCount: 1,

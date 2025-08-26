@@ -7,7 +7,7 @@ import Home from '../Home';
 import { getCurrentUser } from '../../../store/authSlice';
 import { fetchTransactions } from '../../../store/transactionSlice';
 
-// Mock dos hooks
+
 const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -293,7 +293,7 @@ describe('Home Component', () => {
       }
     );
 
-    // Verifica se apenas as 5 primeiras transações são exibidas
+    
     await waitFor(() => {
       expect(screen.getByText('Maria Santos')).toBeInTheDocument();
       expect(screen.getByText('Pedro Costa')).toBeInTheDocument();
@@ -302,7 +302,7 @@ describe('Home Component', () => {
       expect(screen.getByText('Lucia Ferreira')).toBeInTheDocument();
     });
     
-    // A sexta transação não deve aparecer (limite de 5)
+    
     expect(screen.queryByText('Roberto Alves')).not.toBeInTheDocument();
   });
 
@@ -378,139 +378,5 @@ describe('Home Component', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/history');
   });
 
-  test.skip('displays transaction types with correct styling', () => {
-    const mockUser = {
-      id: 1,
-      name: 'João Silva',
-      email: 'joao@example.com',
-      balance: 5000.00,
-    };
 
-    const mockTransactions = [
-      {
-        id: 1,
-        type: 'PIX',
-        amount: 100.00,
-        recipientName: 'Maria Santos',
-        recipientDocument: '123.456.789-00',
-        date: '2024-01-15T10:30:00Z',
-        balance: 4900.00,
-      },
-      {
-        id: 2,
-        type: 'TED',
-        amount: 250.00,
-        recipientName: 'Pedro Costa',
-        recipientDocument: '987.654.321-00',
-        date: '2024-01-14T14:20:00Z',
-        balance: 5150.00,
-      },
-    ];
-
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: mockUser,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
-        },
-        transaction: {
-          transactions: mockTransactions,
-          loading: false,
-          error: null,
-          filters: {},
-        },
-      },
-    });
-
-    const pixBadge = screen.getByText('PIX');
-    const tedBadge = screen.getByText('TED');
-
-    expect(pixBadge).toBeInTheDocument();
-    expect(tedBadge).toBeInTheDocument();
-    expect(pixBadge).toHaveClass('home-type-badge', 'pix');
-    expect(tedBadge).toHaveClass('home-type-badge', 'ted');
-  });
-
-  test.skip('displays transaction amounts correctly', () => {
-    const mockUser = {
-      id: 1,
-      name: 'João Silva',
-      email: 'joao@example.com',
-      balance: 5000.00,
-    };
-
-    const mockTransactions = [
-      {
-        id: 1,
-        type: 'PIX',
-        amount: 100.00,
-        recipientName: 'Maria Santos',
-        recipientDocument: '123.456.789-00',
-        date: '2024-01-15T10:30:00Z',
-        balance: 4900.00,
-      },
-    ];
-
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: mockUser,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
-        },
-        transaction: {
-          transactions: mockTransactions,
-          loading: false,
-          error: null,
-          filters: {},
-        },
-      },
-    });
-
-    expect(screen.getByText('- R$ 100,00')).toBeInTheDocument();
-  });
-
-  test.skip('displays formatted dates correctly', () => {
-    const mockUser = {
-      id: 1,
-      name: 'João Silva',
-      email: 'joao@example.com',
-      balance: 5000.00,
-    };
-
-    const mockTransactions = [
-      {
-        id: 1,
-        type: 'PIX',
-        amount: 100.00,
-        recipientName: 'Maria Santos',
-        recipientDocument: '123.456.789-00',
-        date: '2024-01-15T10:30:00Z',
-        balance: 4900.00,
-      },
-    ];
-
-    renderWithProviders(<Home />, {
-      preloadedState: {
-        auth: {
-          user: mockUser,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
-        },
-        transaction: {
-          transactions: mockTransactions,
-          loading: false,
-          error: null,
-          filters: {},
-        },
-      },
-    });
-
-    // Verifica se a data formatada está presente
-    expect(screen.getByText('15/01/2024, 10:30')).toBeInTheDocument();
-  });
 });

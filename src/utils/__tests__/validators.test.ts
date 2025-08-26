@@ -87,8 +87,8 @@ describe('Validators', () => {
     it('should handle edge cases', () => {
       expect(validateDocument('')).toBe(false);
       expect(validateDocument('abc')).toBe(false);
-      expect(validateDocument('123abc456def789ghi01')).toBe(true); // 11 digits after cleaning
-      expect(validateDocument('12abc345def678ghi901jkl234')).toBe(true); // 14 digits after cleaning
+      expect(validateDocument('123abc456def789ghi01')).toBe(true); 
+      expect(validateDocument('12abc345def678ghi901jkl234')).toBe(true); 
     });
   });
 

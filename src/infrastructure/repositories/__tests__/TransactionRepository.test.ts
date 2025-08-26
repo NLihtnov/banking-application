@@ -3,7 +3,7 @@ import { ApiClient } from '../../api/ApiClient';
 import { Transaction } from '../../../domain/entities/Transaction';
 import { TransactionFilters } from '../../../domain/repositories/ITransactionRepository';
 
-// Mock do ApiClient
+
 jest.mock('../../api/ApiClient');
 
 describe('TransactionRepository', () => {
@@ -100,7 +100,7 @@ describe('TransactionRepository', () => {
       expectedDate.setDate(expectedDate.getDate() - 7);
       const expectedDateString = expectedDate.toISOString();
 
-      // Verifica se a chamada foi feita com o padrão correto, ignorando diferenças de milissegundos
+      
       expect(mockApiClient.get).toHaveBeenCalledWith(
         expect.stringMatching(/\/transactions\?userId=1&date_gte=\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/)
       );
@@ -189,7 +189,7 @@ describe('TransactionRepository', () => {
 
       const result = await transactionRepository.findByUserId(1, filters);
 
-      // Verifica se a chamada foi feita com os parâmetros corretos
+      
       expect(mockApiClient.get).toHaveBeenCalledWith(
         '/transactions?userId=1&type=PIX&date_gte=2024-01-01&date_lte=2024-01-31&amount_gte=50&amount_lte=200'
       );
@@ -236,8 +236,8 @@ describe('TransactionRepository', () => {
       };
       const result = await transactionRepository.findByUserId(1, filters);
 
-      expect(result[0].id).toBe(2); // Pedro Costa (data mais antiga)
-      expect(result[1].id).toBe(1); // Maria Santos (data mais recente)
+      expect(result[0].id).toBe(2); 
+      expect(result[1].id).toBe(1); 
     });
 
     test('should sort transactions by date descending', async () => {
@@ -274,8 +274,8 @@ describe('TransactionRepository', () => {
       };
       const result = await transactionRepository.findByUserId(1, filters);
 
-      expect(result[0].id).toBe(1); // Maria Santos (data mais recente)
-      expect(result[1].id).toBe(2); // Pedro Costa (data mais antiga)
+      expect(result[0].id).toBe(1); 
+      expect(result[1].id).toBe(2); 
     });
 
     test('should sort transactions by amount ascending', async () => {

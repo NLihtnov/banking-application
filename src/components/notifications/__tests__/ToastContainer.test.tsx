@@ -7,7 +7,7 @@ import notificationReducer from '../../../store/notificationSlice';
 import authReducer from '../../../store/authSlice';
 import { NotificationData } from '../../../services/WebSocketService';
 
-// Mock the Toast component to avoid timer issues
+
 jest.mock('../Toast', () => ({
   Toast: ({ notification, onClose }: { notification: NotificationData; onClose: () => void }) => (
     <div data-testid={`toast-${notification.id}`} onClick={onClose}>
@@ -66,7 +66,7 @@ describe('ToastContainer', () => {
   let store: any;
 
   beforeEach(() => {
-    // Create a fresh store for each test
+    
     store = createTestStore({
       notifications: {
         notifications: [],
@@ -98,10 +98,10 @@ describe('ToastContainer', () => {
     
     render(<ToastContainer />, { wrapper });
     
-    // Initially no toasts
+    
     expect(screen.queryByTestId(/toast-/)).not.toBeInTheDocument();
     
-    // Add notification to store
+    
     act(() => {
       store.dispatch({
         type: 'notifications/addNotification',
@@ -109,7 +109,7 @@ describe('ToastContainer', () => {
       });
     });
     
-    // Should now show the toast
+    
     expect(screen.getByTestId('toast-high-1')).toBeInTheDocument();
     expect(screen.getByText('High Priority Transaction')).toBeInTheDocument();
   });
@@ -119,7 +119,7 @@ describe('ToastContainer', () => {
     
     render(<ToastContainer />, { wrapper });
     
-    // Add notification to store
+    
     act(() => {
       store.dispatch({
         type: 'notifications/addNotification',
@@ -127,7 +127,7 @@ describe('ToastContainer', () => {
       });
     });
     
-    // Should show the toast
+    
     expect(screen.getByTestId('toast-urgent-1')).toBeInTheDocument();
     expect(screen.getByText('Urgent Security Alert')).toBeInTheDocument();
   });
@@ -137,7 +137,7 @@ describe('ToastContainer', () => {
     
     render(<ToastContainer />, { wrapper });
     
-    // Add low priority notification to store
+    
     act(() => {
       store.dispatch({
         type: 'notifications/addNotification',
@@ -145,7 +145,7 @@ describe('ToastContainer', () => {
       });
     });
     
-    // Should not show the toast
+    
     expect(screen.queryByTestId('toast-low-1')).not.toBeInTheDocument();
     expect(screen.queryByText('Low Priority Message')).not.toBeInTheDocument();
   });
@@ -155,7 +155,7 @@ describe('ToastContainer', () => {
     
     render(<ToastContainer />, { wrapper });
     
-    // Add both notifications to store
+    
     act(() => {
       store.dispatch({
         type: 'notifications/addNotification',
@@ -167,7 +167,7 @@ describe('ToastContainer', () => {
       });
     });
     
-    // Should show both toasts
+    
     expect(screen.getByTestId('toast-high-1')).toBeInTheDocument();
     expect(screen.getByTestId('toast-urgent-1')).toBeInTheDocument();
     expect(screen.getByText('High Priority Transaction')).toBeInTheDocument();
@@ -179,7 +179,7 @@ describe('ToastContainer', () => {
     
     render(<ToastContainer />, { wrapper });
     
-    // Add same notification twice - but with different IDs to simulate real behavior
+    
     act(() => {
       store.dispatch({
         type: 'notifications/addNotification',
@@ -191,7 +191,7 @@ describe('ToastContainer', () => {
       });
     });
     
-    // Should show two toasts (different IDs)
+    
     expect(screen.getAllByTestId(/toast-/)).toHaveLength(2);
     expect(screen.getByTestId('toast-high-1')).toBeInTheDocument();
     expect(screen.getByTestId('toast-high-2')).toBeInTheDocument();
@@ -202,7 +202,7 @@ describe('ToastContainer', () => {
     
     render(<ToastContainer />, { wrapper });
     
-    // Add notification to store
+    
     act(() => {
       store.dispatch({
         type: 'notifications/addNotification',
@@ -213,12 +213,12 @@ describe('ToastContainer', () => {
     const toast = screen.getByTestId('toast-high-1');
     expect(toast).toBeInTheDocument();
     
-    // Click to close
+    
     act(() => {
       toast.click();
     });
     
-    // Toast should be removed
+    
     expect(screen.queryByTestId('toast-high-1')).not.toBeInTheDocument();
   });
 
@@ -227,7 +227,7 @@ describe('ToastContainer', () => {
     
     render(<ToastContainer />, { wrapper });
     
-    // Add both notifications to store
+    
     act(() => {
       store.dispatch({
         type: 'notifications/addNotification',
@@ -239,11 +239,11 @@ describe('ToastContainer', () => {
       });
     });
     
-    // Get the container divs that have the positioning styles
+    
     const toastContainers = screen.getAllByTestId(/toast-/);
     expect(toastContainers).toHaveLength(2);
     
-    // Check that both toasts are rendered
+    
     expect(screen.getByTestId('toast-high-1')).toBeInTheDocument();
     expect(screen.getByTestId('toast-urgent-1')).toBeInTheDocument();
   });
@@ -253,7 +253,7 @@ describe('ToastContainer', () => {
     
     render(<ToastContainer />, { wrapper });
     
-    // Add all notifications to store
+    
     act(() => {
       store.dispatch({
         type: 'notifications/addNotification',
@@ -269,12 +269,12 @@ describe('ToastContainer', () => {
       });
     });
     
-    // Should only show high and urgent priority notifications
+    
     expect(screen.getByTestId('toast-high-1')).toBeInTheDocument();
     expect(screen.getByTestId('toast-urgent-1')).toBeInTheDocument();
     expect(screen.queryByTestId('toast-low-1')).not.toBeInTheDocument();
     
-    // Should show exactly 2 toasts
+    
     expect(screen.getAllByTestId(/toast-/)).toHaveLength(2);
   });
 });

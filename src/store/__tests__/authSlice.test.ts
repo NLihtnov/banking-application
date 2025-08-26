@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer, { login, register, getCurrentUser, logout, clearError, updateBalance } from '../authSlice';
 
-// Mock do localStorage
 const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
@@ -12,7 +11,6 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 });
 
-// Mock do DependencyContainer
 jest.mock('../../infrastructure/container/DependencyContainer', () => ({
   DependencyContainer: {
     getInstance: jest.fn(() => ({
@@ -25,7 +23,6 @@ jest.mock('../../infrastructure/container/DependencyContainer', () => ({
   },
 }));
 
-// Configuração do store de teste
 const createTestStore = (preloadedState: any = undefined) => {
   const config: any = {
     reducer: { auth: authReducer },
@@ -48,7 +45,6 @@ describe('Auth Slice', () => {
 
   describe('Initial State', () => {
     it('should have correct initial state', () => {
-      // Ensure localStorage returns null for token
       localStorageMock.getItem.mockReturnValue(null);
       const store = createTestStore();
       const state = store.getState().auth;
@@ -61,10 +57,8 @@ describe('Auth Slice', () => {
     });
 
     it('should initialize with token from localStorage', () => {
-      // Mock localStorage before creating store
       localStorageMock.getItem.mockReturnValue('test-token');
       
-      // Create a store with preloaded state to test localStorage behavior
       const store = createTestStore({
         user: null,
         token: 'test-token',
@@ -165,8 +159,8 @@ describe('Auth Slice', () => {
         const mockUser = { id: 1, name: 'Test User', email: 'test@example.com', balance: 1000 };
         const mockToken = 'test-token';
         
-        // The setItem call happens in the async thunk, not in the fulfilled reducer
-        // So we need to test that the state is updated correctly
+        
+        
         store.dispatch(login.fulfilled(
           { user: mockUser, token: mockToken },
           '',
@@ -178,7 +172,7 @@ describe('Auth Slice', () => {
         expect(state.user).toEqual(mockUser);
         expect(state.token).toBe(mockToken);
         expect(state.isAuthenticated).toBe(true);
-        // Note: setItem is called in the async thunk before fulfilled, not in the reducer
+        
       });
 
       it('should handle login.rejected', () => {
@@ -234,7 +228,7 @@ describe('Auth Slice', () => {
         expect(state.user).toEqual(mockUser);
         expect(state.token).toBe(mockToken);
         expect(state.isAuthenticated).toBe(true);
-        // Note: setItem is called in the async thunk before fulfilled, not in the reducer
+        
       });
 
       it('should handle register.rejected', () => {
@@ -317,7 +311,7 @@ describe('Auth Slice', () => {
         balance: 1000,
       };
       
-      // Dispatch directly converted data as the async thunk would do
+      
       store.dispatch(login.fulfilled(
         { user: mockUser, token: 'test-token' },
         '',
@@ -337,7 +331,7 @@ describe('Auth Slice', () => {
         _balance: 1000,
       };
       
-      // Simulate what the async thunk does - convert then store
+      
       const convertedUser = {
         id: rawMockUser._id,
         name: rawMockUser._name,
@@ -369,7 +363,7 @@ describe('Auth Slice', () => {
         _balance: 1000,
       };
       
-      // Simulate what the async thunk does - convert then store
+      
       const convertedUser = {
         id: rawMockUser.id,
         name: rawMockUser._name,

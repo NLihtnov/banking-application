@@ -13,7 +13,7 @@ import notificationReducer, {
   updateBalanceNotification,
 } from '../notificationSlice';
 
-// Configuração do store de teste
+
 const createTestStore = (preloadedState: any = undefined) => {
   const config: any = {
     reducer: { notifications: notificationReducer },
@@ -143,19 +143,19 @@ describe('Notification Slice', () => {
           userId: '1',
           data: {},
           priority: 'low' as any,
-          read: i < 25, // First 25 are read, last 26 are unread
+          read: i < 25, 
         }));
         
-        // Add 51 notifications
+        
         notifications.forEach(notification => {
           store.dispatch(addNotification(notification as any));
         });
         
         const state = store.getState().notifications;
         expect(state.notifications).toHaveLength(50);
-        expect(state.notifications[0].id).toBe('50'); // Most recent first
-        expect(state.notifications[49].id).toBe('1'); // Oldest remaining
-        expect(state.unreadCount).toBe(26); // 26 unread notifications
+        expect(state.notifications[0].id).toBe('50'); 
+        expect(state.notifications[49].id).toBe('1'); 
+        expect(state.unreadCount).toBe(26); 
       });
 
       it('should handle removal of unread notification when limit exceeded', () => {
@@ -175,17 +175,17 @@ describe('Notification Slice', () => {
           userId: '1',
           data: {},
           priority: 'low' as any,
-          read: false, // All unread
+          read: false, 
         }));
         
-        // Add 51 notifications
+        
         notifications.forEach(notification => {
           store.dispatch(addNotification(notification as any));
         });
         
         const state = store.getState().notifications;
         expect(state.notifications).toHaveLength(50);
-        expect(state.unreadCount).toBe(50); // One unread notification was removed
+        expect(state.unreadCount).toBe(50); 
       });
     });
 
@@ -287,7 +287,7 @@ describe('Notification Slice', () => {
               read: false,
             },
           ],
-          unreadCount: 0, // Already at 0
+          unreadCount: 0, 
           isConnected: false,
           connectionError: null,
           showNotifications: false,

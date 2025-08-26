@@ -1,13 +1,14 @@
 import { useCallback } from 'react';
-import { useAppDispatch, useAppSelector } from './index';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../store';
 import { createTransaction } from '../store/transactionSlice';
 import { updateBalance } from '../store/authSlice';
 import { CreateTransactionData } from '../domain/entities/types';
 import { webSocketService } from '../services/WebSocketService';
 
 export const useTransaction = () => {
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector(state => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const executeTransaction = useCallback(async (transactionData: CreateTransactionData) => {
     try {

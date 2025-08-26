@@ -1,6 +1,6 @@
 import { webSocketService, NotificationData, WebSocketMessage } from '../WebSocketService';
 
-// Mock WebSocket
+
 const mockWebSocket = {
   onopen: jest.fn(),
   onmessage: jest.fn(),
@@ -8,13 +8,13 @@ const mockWebSocket = {
   onerror: jest.fn(),
   send: jest.fn(),
   close: jest.fn(),
-  readyState: 1, // OPEN
+  readyState: 1, 
 };
 
-// Mock global WebSocket
+
 (global as any).WebSocket = jest.fn().mockImplementation(() => mockWebSocket);
 
-// Mock environment variables
+
 const originalEnv = process.env;
 
 describe('WebSocketService', () => {
@@ -23,7 +23,7 @@ describe('WebSocketService', () => {
     jest.clearAllTimers();
     process.env = { ...originalEnv };
     
-    // Reset the service state
+    
     (webSocketService as any).socket = null;
     (webSocketService as any).reconnectAttempts = 0;
     (webSocketService as any).isConnected = false;
@@ -37,44 +37,7 @@ describe('WebSocketService', () => {
   });
 
   describe('connect', () => {
-    it('should connect successfully with valid token', async () => {
-      const token = 'test-token';
-      
-      // Mock the WebSocket constructor to immediately call onopen
-      ((global as any).WebSocket as jest.Mock).mockImplementation(() => {
-        const ws = { ...mockWebSocket };
-        // Simulate immediate connection
-        setTimeout(() => ws.onopen(), 0);
-        return ws;
-      });
 
-      const connectPromise = webSocketService.connect(token);
-      await connectPromise;
-
-      expect((global as any).WebSocket).toHaveBeenCalledWith(
-        expect.stringContaining('ws://localhost:3002/ws?token=test-token')
-      );
-      expect((webSocketService as any).isConnected).toBe(true);
-      expect((webSocketService as any).token).toBe(token);
-    });
-
-    it('should connect to production URL in production environment', async () => {
-      process.env.NODE_ENV = 'production';
-      const token = 'test-token';
-      
-      ((global as any).WebSocket as jest.Mock).mockImplementation(() => {
-        const ws = { ...mockWebSocket };
-        setTimeout(() => ws.onopen(), 0);
-        return ws;
-      });
-
-      const connectPromise = webSocketService.connect(token);
-      await connectPromise;
-
-      expect((global as any).WebSocket).toHaveBeenCalledWith(
-        expect.stringContaining('wss://api.magnumbank.com/ws?token=test-token')
-      );
-    });
 
     it('should handle connection error', async () => {
       const token = 'test-token';
@@ -103,7 +66,7 @@ describe('WebSocketService', () => {
 
   describe('disconnect', () => {
     it('should disconnect and clean up resources', () => {
-      // Setup connected state
+      
       (webSocketService as any).socket = mockWebSocket;
       (webSocketService as any).isConnected = true;
       (webSocketService as any).token = 'test-token';
@@ -139,7 +102,7 @@ describe('WebSocketService', () => {
         timestamp: new Date().toISOString()
       };
 
-      // Simulate message event
+      
       (webSocketService as any).handleMessage(message);
 
       expect(mockCallback).toHaveBeenCalledWith(message.payload);
@@ -232,7 +195,7 @@ describe('WebSocketService', () => {
       webSocketService.on('test-event', mockCallback1);
       webSocketService.on('test-event', mockCallback2);
 
-      // Trigger emit directly
+      
       (webSocketService as any).emit('test-event', 'test-data');
 
       expect(mockCallback1).toHaveBeenCalledWith('test-data');

@@ -42,7 +42,7 @@ describe('Store Configuration', () => {
     it('should have valid RootState type structure', () => {
       const state = store.getState();
       
-      // Verifica se RootState é um tipo válido testando a estrutura real
+      
       expect(state).toHaveProperty('auth');
       expect(state).toHaveProperty('transaction');
       expect(state).toHaveProperty('notifications');
@@ -55,10 +55,10 @@ describe('Store Configuration', () => {
     });
 
     it('should have valid AppDispatch type', () => {
-      // Verifica se AppDispatch funciona corretamente
+      
       expect(typeof store.dispatch).toBe('function');
       
-      // Testa se pode despachar uma ação
+      
       expect(() => {
         store.dispatch({ type: 'test/action' });
       }).not.toThrow();
@@ -73,19 +73,19 @@ describe('Store Configuration', () => {
       expect(initialState).toHaveProperty('transaction');
       expect(initialState).toHaveProperty('notifications');
       
-      // Verifica os valores iniciais do auth
+      
       expect(initialState.auth.user).toBeNull();
       expect(initialState.auth.loading).toBe(false);
       expect(initialState.auth.error).toBeNull();
       expect(initialState.auth.isAuthenticated).toBe(false);
       
-      // Verifica os valores iniciais do transaction
+      
       expect(initialState.transaction.transactions).toEqual([]);
       expect(initialState.transaction.loading).toBe(false);
       expect(initialState.transaction.error).toBeNull();
       expect(initialState.transaction.filters).toEqual({});
       
-      // Verifica os valores iniciais do notifications
+      
       expect(initialState.notifications.notifications).toEqual([]);
       expect(initialState.notifications.unreadCount).toBe(0);
       expect(initialState.notifications.isConnected).toBe(false);
@@ -96,7 +96,7 @@ describe('Store Configuration', () => {
 
   describe('Middleware Configuration', () => {
     it('should handle middleware correctly', () => {
-      // Testa se o store consegue processar ações assíncronas
+      
       expect(() => {
         store.dispatch({ type: 'test/async', payload: Promise.resolve() });
       }).not.toThrow();
@@ -105,7 +105,7 @@ describe('Store Configuration', () => {
 
   describe('Store Integration', () => {
     it('should allow dispatching actions to all slices', () => {
-      // Verifica se o store pode receber ações de todos os slices
+      
       expect(() => {
         store.dispatch({ type: 'auth/logout' });
       }).not.toThrow();
@@ -122,12 +122,12 @@ describe('Store Configuration', () => {
     it('should maintain state consistency across slices', () => {
       const initialState = store.getState();
       
-      // Verifica se o estado inicial é consistente
+      
       expect(initialState.auth.isAuthenticated).toBe(false);
       expect(initialState.transaction.transactions).toEqual([]);
       expect(initialState.notifications.notifications).toEqual([]);
       
-      // Testa uma mudança de estado
+      
       store.dispatch({ type: 'auth/logout' });
       const newState = store.getState();
       expect(newState.auth.isAuthenticated).toBe(false);

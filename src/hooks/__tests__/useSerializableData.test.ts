@@ -90,7 +90,7 @@ describe('useSerializableData', () => {
       const user = {
         id: 1,
         name: 'Test User',
-        // missing email and balance
+        
       };
 
       const serialized = result.current.serializeUser(user);
@@ -138,7 +138,7 @@ describe('useSerializableData', () => {
         _type: 'PIX',
         _amount: 100,
         _recipientName: 'Test User',
-        date: '2024-01-01T10:00:00.000Z', // Use regular property for date
+        date: '2024-01-01T10:00:00.000Z', 
         _description: 'Test transaction',
         _recipientDocument: '123456789',
         _bank: 'Test Bank',
@@ -193,7 +193,7 @@ describe('useSerializableData', () => {
         type: 'PIX',
         amount: 100,
         recipientName: 'Test User',
-        // date is missing
+        
       };
 
       const beforeTime = Date.now();

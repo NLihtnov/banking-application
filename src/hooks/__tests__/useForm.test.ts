@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { useForm, ValidationRules } from '../useForm';
 
-// Mock timers for debounce testing
+
 jest.useFakeTimers();
 
 describe('useForm', () => {
@@ -92,14 +92,14 @@ describe('useForm', () => {
     it('should clear existing errors when field value changes', () => {
       const { result } = renderHook(() => useForm(initialData, validationRules));
 
-      // First set an error
+      
       act(() => {
         result.current.setFieldError('name', 'Some error');
       });
 
       expect(result.current.errors.name).toBe('Some error');
 
-      // Then change the field value
+      
       act(() => {
         result.current.handleChange({
           target: { name: 'name', value: 'John' },
@@ -118,15 +118,15 @@ describe('useForm', () => {
         } as React.ChangeEvent<HTMLInputElement>);
       });
 
-      // Before debounce timeout
+      
       expect(result.current.errors.name).toBeUndefined();
 
-      // Fast-forward time
+      
       act(() => {
         jest.advanceTimersByTime(300);
       });
 
-      // After debounce timeout
+      
       expect(result.current.errors.name).toBe('Mínimo de 2 caracteres');
     });
   });
@@ -255,7 +255,7 @@ describe('useForm', () => {
         result.current.validateForm();
       });
 
-      // Empty string should not trigger minLength validation for non-required fields
+      
       expect(result.current.errors.optional).toBeUndefined();
     });
   });
@@ -264,14 +264,14 @@ describe('useForm', () => {
     it('should reset form', () => {
       const { result } = renderHook(() => useForm(initialData, validationRules));
 
-      // Modify form state
+      
       act(() => {
         result.current.setFieldValue('name', 'John');
         result.current.setFieldError('email', 'Some error');
         result.current.setFieldTouched('password', true);
       });
 
-      // Reset form
+      
       act(() => {
         result.current.resetForm();
       });

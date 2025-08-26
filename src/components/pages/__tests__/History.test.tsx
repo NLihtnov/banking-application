@@ -366,7 +366,7 @@ describe('History Component', () => {
     const applyFiltersButton = screen.getByText('Aplicar Filtros');
     fireEvent.click(applyFiltersButton);
 
-    // Verifica se o botão está presente e clicável
+    
     expect(applyFiltersButton).toBeInTheDocument();
   });
 
@@ -398,7 +398,7 @@ describe('History Component', () => {
     const clearFiltersButton = screen.getByText('Limpar Filtros');
     fireEvent.click(clearFiltersButton);
 
-    // Verifica se o botão está presente e clicável
+    
     expect(clearFiltersButton).toBeInTheDocument();
   });
 
@@ -460,7 +460,7 @@ describe('History Component', () => {
     const dateSortButton = screen.getByText('Data');
     fireEvent.click(dateSortButton);
 
-    // Verifica se o botão está presente e clicável
+    
     expect(dateSortButton).toBeInTheDocument();
   });
 
@@ -492,7 +492,7 @@ describe('History Component', () => {
     const amountSortButton = screen.getByText('Valor');
     fireEvent.click(amountSortButton);
 
-    // Verifica se o botão está presente e clicável
+    
     expect(amountSortButton).toBeInTheDocument();
   });
 
@@ -643,11 +643,11 @@ describe('History Component', () => {
     });
 
     await waitFor(() => {
-      // Usar getAllByText para pegar todos os elementos PIX e TED
+      
       const pixBadges = screen.getAllByText('PIX');
       const tedBadges = screen.getAllByText('TED');
 
-      // Pegar o badge da transação (não do select)
+      
       const pixBadge = pixBadges.find(badge => badge.classList.contains('history-type-badge'));
       const tedBadge = tedBadges.find(badge => badge.classList.contains('history-type-badge'));
 
@@ -658,49 +658,7 @@ describe('History Component', () => {
     });
   });
 
-  test.skip('displays formatted dates correctly', async () => {
-    const mockUser = {
-      id: 1,
-      name: 'João Silva',
-      email: 'joao@example.com',
-      balance: 5000.00,
-    };
 
-    const mockTransactions = [
-      {
-        id: 1,
-        type: 'PIX',
-        amount: 100.00,
-        recipientName: 'Maria Santos',
-        recipientDocument: '123.456.789-00',
-        date: '2024-01-15T07:30:00Z', // Ajustando para 07:30 para corresponder ao que está sendo renderizado
-        balance: 4900.00,
-        pixKey: 'maria@email.com',
-      },
-    ];
-
-    renderWithProviders(<History />, {
-      preloadedState: {
-        auth: {
-          user: mockUser,
-          loading: false,
-          error: null,
-          isAuthenticated: true,
-        },
-        transaction: {
-          transactions: mockTransactions,
-          loading: false,
-          error: null,
-          filters: {},
-        },
-      },
-    });
-
-    // Verifica se a data formatada está presente
-    await waitFor(() => {
-      expect(screen.getByText('15/01/2024, 07:30')).toBeInTheDocument();
-    });
-  });
 
   test('displays transaction amounts correctly', async () => {
     const mockUser = {

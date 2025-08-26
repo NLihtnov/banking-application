@@ -44,9 +44,9 @@ describe('Formatters', () => {
       const testDate = '2024-01-15T10:30:00.000Z';
       const result = formatDate(testDate);
       
-      // Verifica se contém os elementos esperados
-      expect(result).toMatch(/\d{2}\/\d{2}\/\d{4}/); // dd/mm/yyyy
-      expect(result).toMatch(/\d{2}:\d{2}/); // hh:mm
+      
+      expect(result).toMatch(/\d{2}\/\d{2}\/\d{4}/); 
+      expect(result).toMatch(/\d{2}:\d{2}/); 
     });
 
     it('should format date string without time correctly', () => {
@@ -66,7 +66,7 @@ describe('Formatters', () => {
     });
 
     it('should handle edge case dates correctly', () => {
-      const testDate = '2000-02-29T00:00:00.000Z'; // Ano bissexto
+      const testDate = '2000-02-29T00:00:00.000Z'; 
       const result = formatDate(testDate);
       
       expect(result).toMatch(/\d{2}\/\d{2}\/\d{4}/);

@@ -7,7 +7,6 @@ import transactionReducer, {
   clearTransactions 
 } from '../transactionSlice';
 
-// Mock do localStorage
 const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
@@ -18,7 +17,6 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 });
 
-// Mock do DependencyContainer
 jest.mock('../../infrastructure/container/DependencyContainer', () => ({
   DependencyContainer: {
     getInstance: jest.fn(() => ({
@@ -30,14 +28,12 @@ jest.mock('../../infrastructure/container/DependencyContainer', () => ({
   },
 }));
 
-// Mock do JwtService
 jest.mock('../../services/JwtService', () => ({
   JwtService: {
     verifyToken: jest.fn(),
   },
 }));
 
-// Configuração do store de teste
 const createTestStore = (preloadedState: any = undefined) => {
   const config: any = {
     reducer: { transaction: transactionReducer },
@@ -222,7 +218,7 @@ describe('Transaction Slice', () => {
         const state = store.getState().transaction;
         expect(state.loading).toBe(false);
         expect(state.transactions).toContain(mockTransaction);
-        expect(state.transactions[0]).toEqual(mockTransaction); // Deve ser adicionado no início
+        expect(state.transactions[0]).toEqual(mockTransaction);
       });
 
       it('should handle createTransaction.rejected', () => {
@@ -296,7 +292,7 @@ describe('Transaction Slice', () => {
         balance: 1000,
       };
       
-      // Dispatch already converted data as the async thunk would do
+      
       store.dispatch(fetchTransactions.fulfilled([mockTransaction], '', {}));
       
       const state = store.getState().transaction;
@@ -321,7 +317,7 @@ describe('Transaction Slice', () => {
         _balance: 1000,
       };
       
-      // Simulate what the async thunk does - convert then store
+      
       const convertedTransaction = {
         id: rawMockTransaction._id,
         userId: rawMockTransaction._userId,
@@ -376,7 +372,7 @@ describe('Transaction Slice', () => {
         balance: 1000,
       };
       
-      // Simulate what the async thunk does - convert then store
+      
       const convertedTransaction = {
         id: rawMockTransaction.id,
         userId: rawMockTransaction._userId,
@@ -422,7 +418,7 @@ describe('Transaction Slice', () => {
         type: 'PIX',
         amount: 100,
         recipientName: 'Test',
-        date: mockDate, // Raw Date object
+        date: mockDate, 
         description: 'Test',
         recipientDocument: '123',
         bank: 'Test Bank',
@@ -432,10 +428,10 @@ describe('Transaction Slice', () => {
         balance: 1000,
       };
       
-      // Simulate what the async thunk does - convert then store
+      
       const convertedTransaction = {
         ...rawMockTransaction,
-        date: mockDate.toISOString(), // Converted to string
+        date: mockDate.toISOString(), 
       };
       
       store.dispatch(fetchTransactions.fulfilled([convertedTransaction], '', {}));
@@ -453,7 +449,7 @@ describe('Transaction Slice', () => {
         type: 'PIX',
         amount: 100,
         recipientName: 'Test',
-        date: undefined, // Missing date
+        date: undefined, 
         description: 'Test',
         recipientDocument: '123',
         bank: 'Test Bank',
@@ -463,10 +459,10 @@ describe('Transaction Slice', () => {
         balance: 1000,
       };
       
-      // Simulate what the async thunk does - convert then store
+      
       const convertedTransaction = {
         ...rawMockTransaction,
-        date: new Date().toISOString(), // Current date as string
+        date: new Date().toISOString(), 
       };
       
       store.dispatch(fetchTransactions.fulfilled([convertedTransaction], '', {}));
@@ -474,7 +470,7 @@ describe('Transaction Slice', () => {
       const state = store.getState().transaction;
       expect(state.transactions[0].date).toBeDefined();
       expect(typeof state.transactions[0].date).toBe('string');
-      expect(new Date(state.transactions[0].date).getTime()).toBeCloseTo(Date.now(), -2); // Within 100ms
+      expect(new Date(state.transactions[0].date).getTime()).toBeCloseTo(Date.now(), -2); 
     });
   });
 

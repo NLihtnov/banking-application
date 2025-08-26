@@ -75,7 +75,7 @@ const Navbar: React.FC = memo(() => {
         </button>
       </div>
 
-      <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+      <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`} data-testid="mobile-menu">
         <div className="mobile-menu-content">
           <Link to="/home" className="mobile-menu-link" onClick={closeMenu}>
             {t('home')}

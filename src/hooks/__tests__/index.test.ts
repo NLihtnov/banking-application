@@ -44,7 +44,7 @@ describe('Redux Hooks', () => {
       const action = { type: 'auth/logout' };
       result.current(action);
       
-      // Verify that the action was dispatched by checking state change
+      
       const state = store.getState();
       expect(state.auth.isAuthenticated).toBe(false);
     });
@@ -87,7 +87,7 @@ describe('Redux Hooks', () => {
 
       expect(result.current).toBe(false);
 
-      // Dispatch an action to change state
+      
       store.dispatch({
         type: 'auth/login/fulfilled',
         payload: {
@@ -96,13 +96,13 @@ describe('Redux Hooks', () => {
         },
       });
 
-      // Re-render to get updated state
+      
       const { result: updatedResult } = renderHook(
         () => useAppSelector(state => state.auth.isAuthenticated),
         { wrapper }
       );
 
-      // The selector should return the updated value
+      
       expect(updatedResult.current).toBe(true);
     });
 

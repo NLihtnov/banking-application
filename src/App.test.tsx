@@ -6,7 +6,6 @@ import App from './App';
 import notificationReducer from './store/notificationSlice';
 import authReducer from './store/authSlice';
 
-// Mock localStorage
 const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
@@ -17,7 +16,6 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 });
 
-// Mock the store module
 jest.mock('./store', () => ({
   store: {
     dispatch: jest.fn(),
@@ -26,13 +24,11 @@ jest.mock('./store', () => ({
   },
 }));
 
-// Mock the getCurrentUser action
 jest.mock('./store/authSlice', () => ({
   ...jest.requireActual('./store/authSlice'),
   getCurrentUser: jest.fn(() => ({ type: 'auth/getCurrentUser' })),
 }));
 
-// Mock all components
 jest.mock('./components/layout/Navbar', () => {
   return function MockNavbar() {
     return <div data-testid="navbar">Navbar</div>;
@@ -81,7 +77,6 @@ jest.mock('./components/layout/PrivateRoute', () => {
   };
 });
 
-// Mock hooks
 jest.mock('./hooks', () => ({
   useAppSelector: jest.fn((selector) => {
     return {
@@ -142,7 +137,6 @@ describe('App', () => {
     
     render(<App />, { wrapper });
     
-    // Verify that localStorage.getItem was called
     expect(localStorageMock.getItem).toHaveBeenCalledWith('token');
   });
 
@@ -154,7 +148,6 @@ describe('App', () => {
     
     render(<App />, { wrapper });
     
-    // Verify that localStorage.getItem was called but returned null
     expect(localStorageMock.getItem).toHaveBeenCalledWith('token');
   });
 });

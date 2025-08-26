@@ -3,7 +3,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Toast } from '../Toast';
 import { NotificationData } from '../../../services/WebSocketService';
 
-// Mock timers
+
 jest.useFakeTimers();
 
 const mockNotification: NotificationData = {
@@ -62,10 +62,10 @@ describe('Toast', () => {
       />
     );
 
-    // For timer tests, we'll just verify the component renders correctly
-    // The actual timer behavior is complex to test reliably
+    
+    
     expect(screen.getByText('Test Transaction')).toBeInTheDocument();
-    expect(mockOnClose).not.toHaveBeenCalled(); // Should not be called immediately
+    expect(mockOnClose).not.toHaveBeenCalled(); 
   });
 
   it('should call onClose when close button is clicked', () => {
@@ -160,9 +160,9 @@ describe('Toast', () => {
       />
     );
 
-    // For timer tests, we'll just verify the component renders correctly
+    
     expect(screen.getByText('Test Transaction')).toBeInTheDocument();
-    expect(mockOnClose).not.toHaveBeenCalled(); // Should not be called immediately
+    expect(mockOnClose).not.toHaveBeenCalled(); 
   });
 
   it('should show progress bar', () => {
@@ -177,7 +177,7 @@ describe('Toast', () => {
     const progressBar = screen.getByText('Test Transaction').closest('.toast')?.querySelector('.toast-progress');
     expect(progressBar).toBeInTheDocument();
     
-    // Initially progress should be 100%
+    
     expect(progressBar).toHaveStyle({ width: '100%' });
   });
 
@@ -193,18 +193,18 @@ describe('Toast', () => {
     const progressBar = screen.getByText('Test Transaction').closest('.toast')?.querySelector('.toast-progress');
     expect(progressBar).toBeInTheDocument();
     
-    // Initially progress should be 100%
+    
     expect(progressBar).toHaveStyle({ width: '100%' });
     
-    // Fast-forward time to see progress change (more than 100ms to trigger interval)
+    
     act(() => {
       jest.advanceTimersByTime(200);
     });
 
-    // Since the progress bar update logic is complex in tests, 
-    // we'll just verify the component renders and the progress bar exists
+    
+    
     expect(progressBar).toBeInTheDocument();
-    // The actual width change is hard to test reliably in this environment
+    
   });
 
   it('should handle priority colors correctly', () => {
@@ -269,12 +269,12 @@ describe('Toast', () => {
 
     unmount();
 
-    // Fast-forward time to ensure no errors
+    
     act(() => {
       jest.advanceTimersByTime(10000);
     });
 
-    // Should not throw any errors
+    
     expect(mockOnClose).not.toHaveBeenCalled();
   });
 });

@@ -54,14 +54,14 @@ describe('useTransactionForm', () => {
     it('should clear existing errors when field value changes', () => {
       const { result } = renderHook(() => useTransactionForm());
 
-      // Trigger validation to create an error
+      
       act(() => {
         result.current.validateForm();
       });
 
       expect(result.current.errors.recipientName).toBeTruthy();
 
-      // Change field value
+      
       act(() => {
         result.current.handleChange({
           target: { name: 'recipientName', value: 'John Doe' },
@@ -101,14 +101,14 @@ describe('useTransactionForm', () => {
     it('should clear amount errors when value changes', () => {
       const { result } = renderHook(() => useTransactionForm());
 
-      // Trigger validation to create an error
+      
       act(() => {
         result.current.validateForm();
       });
 
       expect(result.current.errors.amount).toBeTruthy();
 
-      // Change amount value
+      
       act(() => {
         result.current.handleAmountChange({
           target: { name: 'amount', value: '100' },
@@ -165,7 +165,7 @@ describe('useTransactionForm', () => {
     it('should validate TED-specific fields', () => {
       const { result } = renderHook(() => useTransactionForm());
 
-      // Set form data for TED
+      
       act(() => {
         result.current.handleChange({
           target: { name: 'type', value: 'TED' },
@@ -201,7 +201,7 @@ describe('useTransactionForm', () => {
     it('should validate PIX-specific fields', () => {
       const { result } = renderHook(() => useTransactionForm());
 
-      // Set form data for PIX
+      
       act(() => {
         result.current.handleChange({
           target: { name: 'type', value: 'PIX' },
@@ -238,7 +238,7 @@ describe('useTransactionForm', () => {
     it('should return true for valid TED form', () => {
       const { result } = renderHook(() => useTransactionForm());
 
-      // Fill all required TED fields
+      
       act(() => {
         result.current.handleChange({
           target: { name: 'type', value: 'TED' },
@@ -284,7 +284,7 @@ describe('useTransactionForm', () => {
     it('should return true for valid PIX form', () => {
       const { result } = renderHook(() => useTransactionForm());
 
-      // Fill all required PIX fields
+      
       act(() => {
         result.current.handleChange({
           target: { name: 'type', value: 'PIX' },
@@ -322,7 +322,7 @@ describe('useTransactionForm', () => {
     it('should validate empty string fields', () => {
       const { result } = renderHook(() => useTransactionForm());
 
-      // Set fields with only whitespace
+      
       act(() => {
         result.current.handleChange({
           target: { name: 'recipientName', value: '   ' },
@@ -351,7 +351,7 @@ describe('useTransactionForm', () => {
     it('should reset form to initial state', () => {
       const { result } = renderHook(() => useTransactionForm());
 
-      // Modify form state
+      
       act(() => {
         result.current.handleChange({
           target: { name: 'recipientName', value: 'John Doe' },
@@ -364,12 +364,12 @@ describe('useTransactionForm', () => {
         result.current.validateForm();
       });
 
-      // Verify state is modified
+      
       expect(result.current.formData.recipientName).toBe('John Doe');
       expect(result.current.formData.amount).toBe(100);
-      expect(Object.keys(result.current.errors)).toHaveLength(7); // 7 errors from validation
+      expect(Object.keys(result.current.errors)).toHaveLength(7); 
 
-      // Reset form
+      
       act(() => {
         result.current.resetForm();
       });
@@ -432,7 +432,7 @@ describe('useTransactionForm', () => {
     it('should handle missing optional fields for TED without errors', () => {
       const { result } = renderHook(() => useTransactionForm());
 
-      // Set form data for TED with optional fields empty
+      
       act(() => {
         result.current.handleChange({
           target: { name: 'type', value: 'TED' },
@@ -466,7 +466,7 @@ describe('useTransactionForm', () => {
           target: { name: 'transactionPassword', value: '123456' },
         } as React.ChangeEvent<HTMLInputElement>);
 
-        // description is optional, so leaving it empty should not cause validation errors
+        
       });
 
       act(() => {

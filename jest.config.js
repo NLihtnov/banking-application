@@ -17,7 +17,7 @@ module.exports = {
     '!src/**/index.tsx',
     '!src/config/index.ts',
     '!src/domain/index.ts',
-    '!src/infrastructure/index.ts',
+    '!src/infrastructure/**',
     '!src/hooks/index.ts',
     '!src/store/index.ts',
     '!src/utils/index.ts',

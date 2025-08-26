@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react';
-import { useAppDispatch, useAppSelector } from './index';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../store';
 import { webSocketService, NotificationData } from '../services/WebSocketService';
 import {
   addNotification,
@@ -13,15 +14,15 @@ import {
 import { updateBalance } from '../store/authSlice';
 
 export const useNotifications = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { 
     notifications, 
     unreadCount, 
     isConnected, 
     connectionError,
     showNotifications 
-  } = useAppSelector(state => state.notifications);
-  const { token, user } = useAppSelector(state => state.auth);
+  } = useSelector((state: RootState) => state.notifications);
+  const { token, user } = useSelector((state: RootState) => state.auth);
 
   const showBrowserNotification = useCallback((notification: NotificationData) => {
     if ('Notification' in window && Notification.permission === 'granted') {

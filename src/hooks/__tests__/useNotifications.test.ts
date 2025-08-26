@@ -3,270 +3,323 @@ import { renderHook, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { useNotifications } from '../useNotifications';
-import authReducer from '../../store/authSlice';
+import { webSocketService } from '../../services/WebSocketService';
 import notificationReducer from '../../store/notificationSlice';
+import authReducer from '../../store/authSlice';
 
-// Mock the WebSocketService
+
 jest.mock('../../services/WebSocketService', () => ({
   webSocketService: {
-    connect: jest.fn().mockResolvedValue(undefined),
+    connect: jest.fn(),
     disconnect: jest.fn(),
     on: jest.fn(),
-    markNotificationAsRead: jest.fn(),
+    off: jest.fn(),
     send: jest.fn(),
+    markNotificationAsRead: jest.fn(),
   },
 }));
 
-// Mock the hooks
-const mockDispatch = jest.fn();
-const mockSelector = jest.fn();
 
-jest.mock('../index', () => ({
-  useAppDispatch: () => mockDispatch,
-  useAppSelector: (selector: any) => mockSelector(selector),
-}));
-
-// Mock Notification API
 Object.defineProperty(window, 'Notification', {
-  value: jest.fn().mockImplementation(() => ({
-    close: jest.fn(),
-    onclick: null,
-  })),
-  configurable: true,
+  value: {
+    requestPermission: jest.fn(),
+    permission: 'granted',
+  },
+  writable: true,
 });
 
-Object.defineProperty(window.Notification, 'permission', {
-  value: 'granted',
-  configurable: true,
-});
 
-Object.defineProperty(window.Notification, 'requestPermission', {
-  value: jest.fn().mockResolvedValue('granted'),
-  configurable: true,
-});
-
-// Mock focus
-Object.defineProperty(window, 'focus', {
-  value: jest.fn(),
-  configurable: true,
-});
-
-const createTestStore = (preloadedState = {}) => {
+const createTestStore = (initialState = {}) => {
   return configureStore({
     reducer: {
-      auth: authReducer,
       notifications: notificationReducer,
+      auth: authReducer,
     },
-    preloadedState,
+    preloadedState: initialState,
   });
 };
 
 const createWrapper = (store: any) => {
-  return ({ children }: { children: React.ReactNode }) => {
-    return React.createElement(Provider, { store }, children);
-  };
+  return ({ children }: { children: React.ReactNode }) => 
+    React.createElement(Provider, { store, children });
 };
 
 describe('useNotifications', () => {
+  let mockWebSocketService: jest.Mocked<typeof webSocketService>;
+  let store: any;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    mockWebSocketService = webSocketService as jest.Mocked<typeof webSocketService>;
     
-    // Default mock implementation
-    mockSelector.mockImplementation((selector: any) => {
-      const mockState = {
-        notifications: {
-          notifications: [],
-          unreadCount: 0,
-          isConnected: false,
-          connectionError: null,
-          showNotifications: false,
+    store = createTestStore({
+      auth: {
+        token: 'test-token',
+        user: {
+          id: 1,
+          name: 'Test User',
+          email: 'test@example.com',
+          balance: 1000,
         },
-        auth: {
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          loading: false,
-          error: null,
-        },
-      };
-      return selector(mockState);
+      },
+      notifications: {
+        notifications: [],
+        unreadCount: 0,
+        isConnected: false,
+        connectionError: null,
+        showNotifications: false,
+      },
     });
   });
 
-  describe('initialization', () => {
-    it('should return initial notification state', () => {
-      const store = createTestStore();
-      const wrapper = createWrapper(store);
-      const { result } = renderHook(() => useNotifications(), { wrapper });
-
-      expect(result.current.notifications).toEqual([]);
-      expect(result.current.unreadCount).toBe(0);
-      expect(result.current.isConnected).toBe(false);
-      expect(result.current.connectionError).toBeNull();
-      expect(result.current.showNotifications).toBe(false);
+  test('should be defined', () => {
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
     });
-
-    it('should provide all required functions', () => {
-      const store = createTestStore();
-      const wrapper = createWrapper(store);
-      const { result } = renderHook(() => useNotifications(), { wrapper });
-
-      expect(typeof result.current.connectWebSocket).toBe('function');
-      expect(typeof result.current.disconnectWebSocket).toBe('function');
-      expect(typeof result.current.markNotificationAsRead).toBe('function');
-      expect(typeof result.current.markAllNotificationsAsRead).toBe('function');
-      expect(typeof result.current.requestNotificationPermission).toBe('function');
-      expect(typeof result.current.sendTestNotification).toBe('function');
-    });
+    expect(result.current).toBeDefined();
   });
 
-  describe('notification functions', () => {
-    it('should mark notification as read', () => {
-      const store = createTestStore();
-      const wrapper = createWrapper(store);
-      const { result } = renderHook(() => useNotifications(), { wrapper });
+  test('should connect to WebSocket when token and user are available', async () => {
+    mockWebSocketService.connect.mockResolvedValue(undefined);
 
-      act(() => {
-        result.current.markNotificationAsRead('notification-1');
-      });
-
-      expect(mockDispatch).toHaveBeenCalled();
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
     });
 
-    it('should mark all notifications as read', () => {
-      // Mock with notifications
-      mockSelector.mockImplementation((selector: any) => {
-        const mockState = {
-          notifications: {
-            notifications: [
-              {
-                id: 'notif-1',
-                type: 'info' as const,
-                title: 'Test 1',
-                message: 'Message 1',
-                timestamp: '2024-01-01T10:00:00.000Z',
-                priority: 'low' as const,
-                read: false,
-              },
-              {
-                id: 'notif-2',
-                type: 'info' as const,
-                title: 'Test 2',
-                message: 'Message 2',
-                timestamp: '2024-01-01T10:00:00.000Z',
-                priority: 'low' as const,
-                read: true,
-              },
-            ],
-            unreadCount: 1,
-            isConnected: true,
-            connectionError: null,
-            showNotifications: false,
-          },
-          auth: {
-            user: null,
-            token: null,
-            isAuthenticated: false,
-            loading: false,
-            error: null,
-          },
-        };
-        return selector(mockState);
-      });
-
-      const store = createTestStore();
-      const wrapper = createWrapper(store);
-      const { result } = renderHook(() => useNotifications(), { wrapper });
-
-      act(() => {
-        result.current.markAllNotificationsAsRead();
-      });
-
-      expect(mockDispatch).toHaveBeenCalled();
+    await act(async () => {
+      await result.current.connectWebSocket();
     });
 
-    it('should disconnect WebSocket', () => {
-      const store = createTestStore();
-      const wrapper = createWrapper(store);
-      const { result } = renderHook(() => useNotifications(), { wrapper });
-
-      act(() => {
-        result.current.disconnectWebSocket();
-      });
-
-      expect(mockDispatch).toHaveBeenCalled();
-    });
+    expect(mockWebSocketService.connect).toHaveBeenCalledWith('test-token');
+    expect(mockWebSocketService.on).toHaveBeenCalledWith('connected', expect.any(Function));
+    expect(mockWebSocketService.on).toHaveBeenCalledWith('error', expect.any(Function));
+    expect(mockWebSocketService.on).toHaveBeenCalledWith('notification', expect.any(Function));
+    expect(mockWebSocketService.on).toHaveBeenCalledWith('transaction_update', expect.any(Function));
+    expect(mockWebSocketService.on).toHaveBeenCalledWith('balance_update', expect.any(Function));
   });
 
-  describe('browser notifications', () => {
-    it('should request notification permission', async () => {
-      // Reset the mock to ensure it returns 'granted'
-      (window.Notification.requestPermission as jest.Mock).mockResolvedValue('granted');
-      
-      const store = createTestStore();
-      const wrapper = createWrapper(store);
-      const { result } = renderHook(() => useNotifications(), { wrapper });
-
-      const permission = await result.current.requestNotificationPermission();
-
-      expect(window.Notification.requestPermission).toHaveBeenCalled();
-      expect(permission).toBe(true);
+  test('should not connect to WebSocket when token is not available', async () => {
+    store = createTestStore({
+      auth: {
+        token: null,
+        user: null,
+      },
+      notifications: {
+        notifications: [],
+        unreadCount: 0,
+        isConnected: false,
+        connectionError: null,
+        showNotifications: false,
+      },
     });
 
-    it('should handle permission denied', async () => {
-      (window.Notification.requestPermission as jest.Mock).mockResolvedValue('denied');
-
-      const store = createTestStore();
-      const wrapper = createWrapper(store);
-      const { result } = renderHook(() => useNotifications(), { wrapper });
-
-      const permission = await result.current.requestNotificationPermission();
-
-      expect(permission).toBe(false);
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
     });
 
-    it('should handle missing Notification API', async () => {
-      const originalNotification = window.Notification;
-      delete (window as any).Notification;
-
-      const store = createTestStore();
-      const wrapper = createWrapper(store);
-      const { result } = renderHook(() => useNotifications(), { wrapper });
-
-      const permission = await result.current.requestNotificationPermission();
-
-      expect(permission).toBe(false);
-
-      // Restore
-      (window as any).Notification = originalNotification;
+    await act(async () => {
+      await result.current.connectWebSocket();
     });
+
+    expect(mockWebSocketService.connect).not.toHaveBeenCalled();
   });
 
-  describe('test notification', () => {
-    it('should send test notification', () => {
-      const store = createTestStore();
-      const wrapper = createWrapper(store);
-      const { result } = renderHook(() => useNotifications(), { wrapper });
+  test('should handle WebSocket connection error', async () => {
+    const errorMessage = 'Connection failed';
+    mockWebSocketService.connect.mockRejectedValue(new Error(errorMessage));
 
-      act(() => {
-        result.current.sendTestNotification();
-      });
-
-      expect(mockDispatch).toHaveBeenCalled();
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
     });
+
+    await act(async () => {
+      await result.current.connectWebSocket();
+    });
+
+    expect(mockWebSocketService.connect).toHaveBeenCalledWith('test-token');
   });
 
-  describe('edge cases', () => {
-    it('should handle empty notifications array in markAllAsRead', () => {
-      const store = createTestStore();
-      const wrapper = createWrapper(store);
-      const { result } = renderHook(() => useNotifications(), { wrapper });
-
-      act(() => {
-        result.current.markAllNotificationsAsRead();
-      });
-
-      expect(mockDispatch).toHaveBeenCalled();
+  test('should disconnect from WebSocket', () => {
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
     });
+
+    act(() => {
+      result.current.disconnectWebSocket();
+    });
+
+    expect(mockWebSocketService.disconnect).toHaveBeenCalled();
+  });
+
+  test('should mark notification as read', () => {
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
+    });
+
+    const notificationId = 'test-notification-id';
+
+    act(() => {
+      result.current.markNotificationAsRead(notificationId);
+    });
+
+    expect(mockWebSocketService.markNotificationAsRead).toHaveBeenCalledWith(notificationId);
+  });
+
+  test('should mark all notifications as read', () => {
+    store = createTestStore({
+      auth: {
+        token: 'test-token',
+        user: { id: 1, name: 'Test User', email: 'test@example.com', balance: 1000 },
+      },
+      notifications: {
+        notifications: [
+          { id: '1', read: false, title: 'Test 1', message: 'Message 1' },
+          { id: '2', read: true, title: 'Test 2', message: 'Message 2' },
+          { id: '3', read: false, title: 'Test 3', message: 'Message 3' },
+        ],
+        unreadCount: 2,
+        isConnected: false,
+        connectionError: null,
+        showNotifications: false,
+      },
+    });
+
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
+    });
+
+    act(() => {
+      result.current.markAllNotificationsAsRead();
+    });
+
+    expect(mockWebSocketService.markNotificationAsRead).toHaveBeenCalledWith('1');
+    expect(mockWebSocketService.markNotificationAsRead).toHaveBeenCalledWith('3');
+    expect(mockWebSocketService.markNotificationAsRead).toHaveBeenCalledTimes(2);
+  });
+
+  test('should request notification permission when available', async () => {
+    const mockRequestPermission = jest.fn().mockResolvedValue('granted');
+    Object.defineProperty(window, 'Notification', {
+      value: {
+        requestPermission: mockRequestPermission,
+        permission: 'default',
+      },
+      writable: true,
+    });
+
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
+    });
+
+    let permissionResult;
+    await act(async () => {
+      permissionResult = await result.current.requestNotificationPermission();
+    });
+
+    expect(mockRequestPermission).toHaveBeenCalled();
+    expect(permissionResult).toBe(true);
+  });
+
+  test('should return false when notification permission is not available', async () => {
+    
+    const originalNotification = window.Notification;
+    delete (window as any).Notification;
+
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
+    });
+
+    let permissionResult;
+    await act(async () => {
+      permissionResult = await result.current.requestNotificationPermission();
+    });
+
+    expect(permissionResult).toBe(false);
+
+    
+    (window as any).Notification = originalNotification;
+  });
+
+  test('should send test notification', () => {
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
+    });
+
+    act(() => {
+      result.current.sendTestNotification();
+    });
+
+    
+    const state = store.getState();
+    expect(state.notifications.notifications).toHaveLength(1);
+    expect(state.notifications.notifications[0].title).toBe('Teste de Notificação');
+  });
+
+  test('should handle WebSocket event handlers', async () => {
+    mockWebSocketService.connect.mockResolvedValue(undefined);
+    let eventHandlers: any = {};
+
+    mockWebSocketService.on.mockImplementation((event, handler) => {
+      eventHandlers[event] = handler;
+    });
+
+    
+    const mockNotification = {
+      close: jest.fn(),
+      onclick: null as any,
+    };
+    const mockNotificationConstructor = jest.fn().mockReturnValue(mockNotification);
+    
+    Object.defineProperty(window, 'Notification', {
+      value: mockNotificationConstructor,
+      writable: true,
+    });
+
+    const { result } = renderHook(() => useNotifications(), {
+      wrapper: createWrapper(store),
+    });
+
+    await act(async () => {
+      await result.current.connectWebSocket();
+    });
+
+    
+    act(() => {
+      eventHandlers.connected(true);
+    });
+
+    
+    act(() => {
+      eventHandlers.error(new Error('Test error'));
+    });
+
+    
+    const testNotification = {
+      id: 'test-1',
+      type: 'system_message',
+      title: 'Test',
+      message: 'Test message',
+      timestamp: new Date().toISOString(),
+      priority: 'high' as const,
+      read: false,
+    };
+
+    act(() => {
+      eventHandlers.notification(testNotification);
+    });
+
+    
+    const transactionData = { id: 1, type: 'transfer', amount: 100 };
+    act(() => {
+      eventHandlers.transaction_update(transactionData);
+    });
+
+    
+    const balanceData = { newBalance: 900 };
+    act(() => {
+      eventHandlers.balance_update(balanceData);
+    });
+
+    expect(mockWebSocketService.on).toHaveBeenCalledTimes(10);
   });
 });
