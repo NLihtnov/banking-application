@@ -1,6 +1,6 @@
 # 🏦 Aplicação Bancária Digital
 
-Uma aplicação web completa para gerenciamento financeiro, desenvolvida em React com TypeScript, Redux Toolkit e React Router.
+Uma aplicação web completa para gerenciamento financeiro, desenvolvida em React com TypeScript, seguindo os princípios da Clean Architecture, com Redux Toolkit, React Router, WebSocket para notificações em tempo real e suporte a múltiplos idiomas.
 
 ## 📋 Funcionalidades
 
@@ -30,6 +30,17 @@ Uma aplicação web completa para gerenciamento financeiro, desenvolvida em Reac
   - Por intervalo de valores
 - **Ordenação**: Por data ou valor (crescente/decrescente)
 
+### 🔔 Notificações em Tempo Real
+- **WebSocket**: Conexão persistente para atualizações
+- **Notificações Push**: Alertas do navegador
+- **Toast Notifications**: Mensagens temporárias
+- **Painel de Notificações**: Histórico completo de alertas
+
+### 🌐 Internacionalização
+- **3 Idiomas**: Português, Inglês e Espanhol (ADICIONADO APENAS A TELA DE HOME PARA DEMONSTRAÇÃO)
+- **Detecção Automática**: Idioma baseado no navegador
+- **Persistência**: Lembrança da escolha do usuário
+
 ## 🛠️ Tecnologias Utilizadas
 
 ### Frontend
@@ -38,24 +49,35 @@ Uma aplicação web completa para gerenciamento financeiro, desenvolvida em Reac
 - **Redux Toolkit**: Gerenciamento de estado global
 - **React Router**: Navegação entre páginas
 - **Axios**: Cliente HTTP para APIs
+- **React i18next**: Internacionalização
+- **React Icons**: Ícones modernos
 
 ### Backend (Mock)
 - **JSON Server**: API REST simulada
+- **WebSocket Server**: Servidor de notificações em tempo real
 - **Concurrently**: Execução simultânea de servidores
 
-### Testes
+### Arquitetura
+- **Clean Architecture**: Separação clara de responsabilidades
+- **Domain-Driven Design**: Foco nas regras de negócio
+- **Dependency Injection**: Inversão de dependências
+
+### Testes (Cobertura em + de 80%)
 - **Jest**: Framework de testes
 - **React Testing Library**: Testes de componentes
+- **TS-Jest**: Suporte a TypeScript nos testes
 
 ### Desenvolvimento
 - **Create React App**: Configuração inicial
-- **ESLint**: Linting de código
+- **CRACO**: Configuração avançada do CRA
+- **ESLint + Prettier**: Linting e formatação
+- **Husky + Lint-staged**: Git hooks para qualidade
 - **CSS3**: Estilização moderna e responsiva
 
 ## 🚀 Como Executar
 
 ### Pré-requisitos
-- Node.js (versão 14 ou superior)
+- Node.js (versão 16 ou superior)
 - npm ou yarn
 
 ### Instalação
@@ -73,29 +95,40 @@ Uma aplicação web completa para gerenciamento financeiro, desenvolvida em Reac
 
 3. **Execute o projeto**
    ```bash
-   # Desenvolvimento (ambos os servidores)
+   # Desenvolvimento completo (todos os serviços)
    npm run dev
    
    # Ou execute separadamente:
    # Terminal 1 - Backend mock
    npm run server
    
-   # Terminal 2 - Frontend
+   # Terminal 2 - WebSocket server
+   npm run websocket
+   
+   # Terminal 3 - Frontend
    npm start
    ```
 
 4. **Acesse a aplicação**
    - Frontend: http://localhost:3000
-   - Backend: http://localhost:3001
+   - API: http://localhost:3001
+   - WebSocket: ws://localhost:3002
 
 ### Scripts Disponíveis
 
 ```bash
-npm start          # Inicia o servidor de desenvolvimento
-npm run build      # Cria build de produção
-npm test           # Executa os testes
-npm run server     # Inicia o JSON Server
-npm run dev        # Inicia ambos os servidores
+npm start                    # Inicia o servidor de desenvolvimento
+npm run build               # Cria build de produção
+npm test                    # Executa os testes
+npm run test:watch         # Testes em modo watch
+npm run test:coverage      # Testes com cobertura
+npm run server             # Inicia o JSON Server
+npm run websocket          # Inicia o servidor WebSocket
+npm run dev                # Inicia todos os serviços
+npm run dev:api            # Frontend + API
+npm run dev:websocket      # Frontend + WebSocket
+npm run lint               # Executa o linter
+npm run lint:fix           # Corrige problemas de linting
 ```
 
 ## 📁 Estrutura do Projeto
@@ -104,60 +137,64 @@ npm run dev        # Inicia ambos os servidores
 banking-app/
 ├── public/
 │   ├── index.html
-│   └── manifest.json
+│   ├── manifest.json
+│   └── locales/           # Arquivos de tradução
+│       ├── en/
+│       ├── es/
+│       └── pt/
 ├── src/
-│   ├── components/
-│   │   ├── auth/
-│   │   │   ├── Login.tsx
-│   │   │   ├── Register.tsx
-│   │   │   └── Auth.css
-│   │   ├── layout/
-│   │   │   ├── Navbar.tsx
-│   │   │   ├── Navbar.css
-│   │   │   └── PrivateRoute.tsx
-│   │   └── pages/
-│   │       ├── Home.tsx
-│   │       ├── Home.css
-│   │       ├── Transaction.tsx
-│   │       ├── Transaction.css
-│   │       ├── History.tsx
-│   │       └── History.css
-│   ├── hooks/
-│   │   ├── useAppDispatch.ts
-│   │   └── useAppSelector.ts
-│   ├── services/
-│   │   └── api.ts
-│   ├── store/
-│   │   ├── index.ts
-│   │   └── slices/
-│   │       ├── authSlice.ts
-│   │       └── transactionSlice.ts
-│   ├── types/
-│   │   └── index.ts
-│   ├── App.tsx
-│   ├── App.css
-│   └── index.tsx
-├── db.json
-├── package.json
-├── tsconfig.json
-└── README.md
+│   ├── components/        # Componentes React
+│   │   ├── auth/         # Autenticação
+│   │   ├── common/       # Componentes compartilhados
+│   │   ├── layout/       # Layout e navegação
+│   │   ├── notifications/# Sistema de notificações
+│   │   ├── pages/        # Páginas principais
+│   │   └── transaction/  # Componentes de transação
+│   ├── domain/           # Camada de domínio (Clean Architecture)
+│   │   ├── entities/     # Entidades de negócio
+│   │   └── repositories/ # Interfaces dos repositórios
+│   ├── application/      # Camada de aplicação (Clean Architecture)
+│   │   └── usecases/     # Casos de uso
+│   ├── infrastructure/   # Camada de infraestrutura (Clean Architecture)
+│   │   ├── api/          # Cliente HTTP
+│   │   ├── repositories/ # Implementações dos repositórios
+│   │   └── container/    # Container de dependências
+│   ├── hooks/            # Hooks customizados
+│   ├── services/         # Serviços (JWT, WebSocket)
+│   ├── store/            # Redux store e slices
+│   ├── utils/            # Utilitários e helpers
+│   ├── config/           # Configurações
+│   ├── __mocks__/        # Mocks para testes
+│   ├── __tests__/        # Testes de integração
+│   ├── i18n.ts           # Configuração de internacionalização
+│   ├── App.tsx           # Componente principal
+│   └── index.tsx         # Ponto de entrada
+├── db.json               # Dados mock para JSON Server
+├── websocket-server.js   # Servidor WebSocket
+├── jest.config.js        # Configuração do Jest
+├── craco.config.js       # Configuração do CRACO
+└── package.json
 ```
 
 ## 🧪 Testes
 
 ### Executar Testes
 ```bash
-npm test
+npm test                   # Executa todos os testes
+npm run test:watch        # Modo watch (recomendado para desenvolvimento)
+npm run test:coverage     # Com cobertura de código
+npm run test:ci           # Para CI/CD
 ```
 
 ### Cobertura de Testes
 ```bash
-npm test -- --coverage
+npm run test:coverage
 ```
 
 ### Testes Específicos
 ```bash
 npm test -- --testNamePattern="Login"
+npm test -- --testPathPattern="auth"
 ```
 
 ## 📊 Dados de Teste
@@ -176,12 +213,14 @@ Crie um arquivo `.env` na raiz do projeto:
 
 ```env
 REACT_APP_API_URL=http://localhost:3001
+REACT_APP_WEBSOCKET_URL=ws://localhost:3002
 ```
 
 ### Personalização
 - **Cores**: Modifique as variáveis CSS em `src/App.css`
-- **API**: Altere a URL base em `src/services/api.ts`
+- **API**: Altere a URL base em `src/infrastructure/api/ApiClient.ts`
 - **Dados**: Edite o arquivo `db.json` para modificar dados iniciais
+- **Idiomas**: Adicione traduções em `public/locales/`
 
 ## 📱 Responsividade
 
@@ -197,6 +236,7 @@ A aplicação é totalmente responsiva e funciona em:
 - **Validação**: Verificação de dados em frontend e backend
 - **Senha de Transação**: Camada adicional de segurança
 - **Proteção de Rotas**: Acesso restrito a usuários autenticados
+- **WebSocket Seguro**: Autenticação via token JWT
 
 ## 🚀 Deploy
 
@@ -223,13 +263,9 @@ npm run build
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📝 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
 ## 👨‍💻 Autor
 
-Desenvolvido como projeto de aplicação bancária completa com todas as funcionalidades solicitadas.
+Desenvolvido como projeto de aplicação bancária completa com todas as funcionalidades solicitadas, seguindo as melhores práticas de desenvolvimento e arquitetura.
 
 ## 🐛 Problemas Conhecidos
 

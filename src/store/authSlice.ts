@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { UserDTO } from '../domain/entities/types';
 import type { LoginCredentials, RegisterData } from '../application/usecases/AuthenticationUseCase';
 import { DependencyContainer } from '../infrastructure/container/DependencyContainer';
+import { convertUserToDTO } from '../utils/converters';
 
 interface AuthState {
   user: UserDTO | null;
@@ -20,13 +21,6 @@ const initialState: AuthState = {
 };
 
 const authUseCase = DependencyContainer.getInstance().getAuthenticationUseCase();
-
-const convertUserToDTO = (user: any): UserDTO => ({
-  id: user.id || user._id,
-  name: user.name || user._name,
-  email: user.email || user._email,
-  balance: user.balance || user._balance
-});
 
 export const login = createAsyncThunk(
   'auth/login',

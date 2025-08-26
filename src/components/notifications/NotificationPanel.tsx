@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useNotifications } from '../../hooks/useNotifications';
 import { hideNotifications, removeNotification } from '../../store/notificationSlice';
 import { NotificationData } from '../../services/WebSocketService';
+import { getTypeIcon, getPriorityIcon } from '../../utils/icons';
 import './NotificationPanel.css';
 
 export const NotificationPanel: React.FC = () => {
@@ -49,26 +50,6 @@ export const NotificationPanel: React.FC = () => {
     
     const diffInDays = Math.floor(diffInHours / 24);
     return `${diffInDays}d atrás`;
-  };
-
-  const getPriorityIcon = (priority: string) => {
-    switch (priority) {
-      case 'urgent': return '🚨';
-      case 'high': return '❗';
-      case 'medium': return '📢';
-      case 'low': return '💡';
-      default: return '📝';
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'transaction': return '💸';
-      case 'balance_update': return '💰';
-      case 'security_alert': return '🔒';
-      case 'system_message': return '⚙️';
-      default: return '📬';
-    }
   };
 
   return (

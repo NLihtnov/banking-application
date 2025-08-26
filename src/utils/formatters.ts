@@ -36,3 +36,33 @@ export const formatDocument = (document: string): string => {
   
   return document;
 };
+
+export const applyCurrencyMask = (value: string): string => {
+  const numericValue = value.replace(/\D/g, '');
+  
+  if (!numericValue) return '';
+  
+  const numberValue = parseInt(numericValue) / 100;
+  
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(numberValue);
+};
+
+export const removeCurrencyMask = (value: string): number => {
+  const numericValue = value.replace(/\D/g, '');
+  
+  if (!numericValue) return 0;
+  
+  return parseInt(numericValue) / 100;
+};
+
+export const formatCurrencyForDisplay = (value: number): string => {
+  if (value === 0) return '';
+  
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value);
+};

@@ -135,3 +135,15 @@
   background-color: #bdc3c7;
   cursor: not-allowed;
 }
+
+.readonly-field {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+  border-color: #dee2e6;
+}
+
+.readonly-field:focus {
+  border-color: #dee2e6;
+  box-shadow: none;
+}

@@ -68,11 +68,7 @@
   gap: 15px;
 }
 
-.user-name {
-  color: white;
-  font-weight: 500;
-  font-size: 14px;
-}
+
 
 .logout-button {
   background: rgba(255, 255, 255, 0.2);
@@ -161,11 +157,7 @@
   gap: 15px;
 }
 
-.mobile-user-name {
-  color: white;
-  font-weight: 500;
-  font-size: 16px;
-}
+
 
 .mobile-logout-button {
   background: rgba(255, 255, 255, 0.2);

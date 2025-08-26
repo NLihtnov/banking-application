@@ -1,8 +1,6 @@
 import { testConfig } from '../config/test';
 
-// Mock da API simulada para testes
 export const mockApi = {
-  // Mock para usuários
   users: {
     get: jest.fn(),
     post: jest.fn(),
@@ -13,7 +11,6 @@ export const mockApi = {
     register: jest.fn(),
   },
   
-  // Mock para transações
   transactions: {
     get: jest.fn(),
     post: jest.fn(),
@@ -23,7 +20,6 @@ export const mockApi = {
     getByUserId: jest.fn(),
   },
   
-  // Mock para autenticação
   auth: {
     login: jest.fn(),
     register: jest.fn(),
@@ -33,12 +29,10 @@ export const mockApi = {
   }
 };
 
-// Dados mockados para testes
 export const mockData = {
   users: testConfig.testDb.users,
   transactions: testConfig.testDb.transactions,
   
-  // Usuário padrão para testes
   defaultUser: {
     id: 1,
     name: 'Test User',
@@ -48,7 +42,6 @@ export const mockData = {
     transactionPassword: '123456'
   },
   
-  // Transação padrão para testes
   defaultTransaction: {
     id: 1,
     userId: 1,
@@ -62,16 +55,13 @@ export const mockData = {
   }
 };
 
-// Configuração dos mocks da API
 export const setupApiMocks = () => {
-  // Mock para GET /users
   mockApi.users.get.mockResolvedValue({
     data: mockData.users,
     status: 200,
     ok: true
   });
   
-  // Mock para GET /users/:id
   mockApi.users.getById.mockImplementation((id: number) => {
     const user = mockData.users.find(u => u.id === id);
     if (user) {
@@ -87,7 +77,6 @@ export const setupApiMocks = () => {
     });
   });
   
-  // Mock para POST /users/login
   mockApi.users.login.mockImplementation((credentials: { email: string; password: string }) => {
     const user = mockData.users.find(u => 
       u.email === credentials.email && u.password === credentials.password
@@ -110,7 +99,6 @@ export const setupApiMocks = () => {
     });
   });
   
-  // Mock para POST /users/register
   mockApi.users.register.mockImplementation((userData: any) => {
     const newUser = {
       id: Date.now(),
@@ -130,14 +118,12 @@ export const setupApiMocks = () => {
     });
   });
   
-  // Mock para GET /transactions
   mockApi.transactions.get.mockResolvedValue({
     data: mockData.transactions,
     status: 200,
     ok: true
   });
   
-  // Mock para GET /transactions/:id
   mockApi.transactions.getById.mockImplementation((id: number) => {
     const transaction = mockData.transactions.find(t => t.id === id);
     if (transaction) {
@@ -153,7 +139,6 @@ export const setupApiMocks = () => {
     });
   });
   
-  // Mock para GET /transactions/user/:userId
   mockApi.transactions.getByUserId.mockImplementation((userId: number) => {
     const userTransactions = mockData.transactions.filter(t => t.userId === userId);
     return Promise.resolve({
@@ -163,7 +148,6 @@ export const setupApiMocks = () => {
     });
   });
   
-  // Mock para POST /transactions
   mockApi.transactions.post.mockImplementation((transactionData: any) => {
     const newTransaction = {
       id: Date.now(),
@@ -180,7 +164,6 @@ export const setupApiMocks = () => {
     });
   });
   
-  // Mock para autenticação
   mockApi.auth.login.mockImplementation((credentials: { email: string; password: string }) => {
     const user = mockData.users.find(u => 
       u.email === credentials.email && u.password === credentials.password
@@ -235,7 +218,6 @@ export const setupApiMocks = () => {
   });
 };
 
-// Limpeza dos mocks
 export const clearApiMocks = () => {
   Object.values(mockApi).forEach(api => {
     if (typeof api === 'object' && api !== null) {
@@ -247,12 +229,10 @@ export const clearApiMocks = () => {
     }
   });
   
-  // Restaura dados originais
   mockData.users = [...testConfig.testDb.users];
   mockData.transactions = [...testConfig.testDb.transactions];
 };
 
-// Reset dos mocks
 export const resetApiMocks = () => {
   Object.values(mockApi).forEach(api => {
     if (typeof api === 'object' && api !== null) {
@@ -264,7 +244,7 @@ export const resetApiMocks = () => {
     }
   });
   
-  // Restaura dados originais
   mockData.users = [...testConfig.testDb.users];
   mockData.transactions = [...testConfig.testDb.transactions];
 };
+

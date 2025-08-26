@@ -165,6 +165,7 @@ describe('TransactionConfirmation Component', () => {
     expect(screen.getByText('Valor:')).toBeInTheDocument();
     expect(screen.getByText('Destinatário:')).toBeInTheDocument();
     expect(screen.getByText('CPF/CNPJ:')).toBeInTheDocument();
+    expect(screen.getByText('Data e Horário:')).toBeInTheDocument();
     expect(screen.getByText('Chave PIX:')).toBeInTheDocument();
   });
 
@@ -176,5 +177,17 @@ describe('TransactionConfirmation Component', () => {
     const buttons = screen.getAllByRole('button');
     expect(buttons[0]).toHaveTextContent('Cancelar');
     expect(buttons[1]).toHaveTextContent('Confirmar Transação');
+  });
+
+  test('displays current date and time', () => {
+    renderTransactionConfirmation();
+    
+    const dateTimeElement = screen.getByText('Data e Horário:').nextElementSibling;
+    expect(dateTimeElement).toBeInTheDocument();
+    
+    // Verifica se contém pelo menos uma data e hora
+    const dateTimeText = dateTimeElement?.textContent;
+    expect(dateTimeText).toMatch(/\d{2}\/\d{2}\/\d{4}/);
+    expect(dateTimeText).toMatch(/\d{2}:\d{2}:\d{2}/);
   });
 });

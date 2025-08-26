@@ -1,9 +1,6 @@
-// Configuração específica para testes
 export const testConfig = {
-  // URL da API simulada para testes
   apiUrl: 'http://localhost:3001',
   
-  // Configurações do banco de dados de teste
   testDb: {
     users: [
       {
@@ -38,14 +35,12 @@ export const testConfig = {
     ]
   },
   
-  // Timeouts para testes
   timeouts: {
     api: 5000,
     websocket: 3000,
     render: 1000
   },
   
-  // Configurações de mock
   mocks: {
     enableApiMocks: true,
     enableWebSocketMocks: true,
@@ -53,14 +48,12 @@ export const testConfig = {
   }
 };
 
-// Configuração para ambiente de teste
 export const getTestConfig = () => {
   const isTest = process.env.NODE_ENV === 'test';
   
   if (isTest) {
     return {
       ...testConfig,
-      // Em testes, sempre usar mocks
       mocks: {
         enableApiMocks: true,
         enableWebSocketMocks: true,
@@ -71,3 +64,4 @@ export const getTestConfig = () => {
   
   return testConfig;
 };
+

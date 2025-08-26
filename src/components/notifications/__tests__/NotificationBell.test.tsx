@@ -192,3 +192,4 @@ describe('NotificationBell', () => {
     expect(bellIcon).toHaveClass('bell-icon');
   });
 });
+

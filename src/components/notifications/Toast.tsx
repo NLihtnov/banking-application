@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NotificationData } from '../../services/WebSocketService';
+import { getTypeIcon } from '../../utils/icons';
 import './Toast.css';
 
 interface ToastProps {
@@ -44,16 +45,6 @@ export const Toast: React.FC<ToastProps> = ({
       case 'medium': return '#2196f3';
       case 'low': return '#4caf50';
       default: return '#6c757d';
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'transaction': return '💸';
-      case 'balance_update': return '💰';
-      case 'security_alert': return '🔒';
-      case 'system_message': return '⚙️';
-      default: return '📬';
     }
   };
 

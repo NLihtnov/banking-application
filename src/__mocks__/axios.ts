@@ -1,4 +1,3 @@
-// Mock para axios
 const mockAxios: any = {
   create: jest.fn(() => mockAxios),
   get: jest.fn(),
@@ -23,13 +22,10 @@ const mockAxios: any = {
   },
 };
 
-// Mock para AxiosInstance
 export const AxiosInstance = jest.fn(() => mockAxios);
 
-// Mock para AxiosRequestConfig
 export const AxiosRequestConfig = {};
 
-// Mock para AxiosResponse
 export const AxiosResponse = {
   data: {},
   status: 200,
@@ -38,7 +34,6 @@ export const AxiosResponse = {
   config: {},
 };
 
-// Mock para AxiosError
 export const AxiosError = class AxiosError extends Error {
   constructor(
     message: string,
@@ -61,10 +56,8 @@ export const AxiosError = class AxiosError extends Error {
   response?: any;
 };
 
-// Mock para isAxiosError
 export const isAxiosError = jest.fn((error: any) => error instanceof AxiosError);
 
-// Mock para axios como default export
 const axios = mockAxios;
 axios.create = jest.fn(() => mockAxios);
 axios.get = jest.fn();

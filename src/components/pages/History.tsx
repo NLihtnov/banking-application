@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useTranslation } from '../../hooks';
+import { fetchTransactions, setFilters } from '../../store/transactionSlice';
 import { getCurrentUser } from '../../store/authSlice';
-import { fetchTransactions, setFilters, clearTransactions } from '../../store/transactionSlice';
 import type { TransactionFilters } from '../../domain/repositories/ITransactionRepository';
-import { formatCurrency, formatDate } from '../../utils/formatters';
+import { formatCurrency, formatDate, applyCurrencyMask, removeCurrencyMask, formatCurrencyForDisplay } from '../../utils/formatters';
 
 import './History.css';
 
 const History: React.FC = () => {
   const [localFilters, setLocalFilters] = useState<TransactionFilters>({});
+  const [minAmountDisplay, setMinAmountDisplay] = useState<string>('');
+  const [maxAmountDisplay, setMaxAmountDisplay] = useState<string>('');
 
   const dispatch = useAppDispatch();
   const { t, currentLanguage } = useTranslation();
@@ -22,10 +24,77 @@ const History: React.FC = () => {
     dispatch(fetchTransactions(filters));
   }, [dispatch, user, filters]);
 
+  useEffect(() => {
+    if (localFilters.minAmount) {
+      setMinAmountDisplay(formatCurrencyForDisplay(localFilters.minAmount));
+    } else {
+      setMinAmountDisplay('');
+    }
+    
+    if (localFilters.maxAmount) {
+      setMaxAmountDisplay(formatCurrencyForDisplay(localFilters.maxAmount));
+    } else {
+      setMaxAmountDisplay('');
+    }
+  }, [localFilters.minAmount, localFilters.maxAmount]);
+
 
 
   const handleFilterChange = (key: keyof TransactionFilters, value: any) => {
     const newFilters = { ...localFilters, [key]: value };
+    
+    if (key === 'startDate' && value) {
+      const today = new Date().toISOString().split('T')[0];
+      if (value > today) {
+        alert('A data inicial não pode ser maior que hoje');
+        return;
+      }
+      
+      if (newFilters.endDate && value > newFilters.endDate) {
+        alert('A data inicial não pode ser maior que a data final');
+        return;
+      }
+    }
+    
+    if (key === 'endDate' && value) {
+      const today = new Date().toISOString().split('T')[0];
+      if (value > today) {
+        alert('A data final não pode ser maior que hoje');
+        return;
+      }
+      
+      if (newFilters.startDate && value < newFilters.startDate) {
+        alert('A data final não pode ser menor que a data inicial');
+        return;
+      }
+    }
+    
+    if (key === 'minAmount' && value !== undefined && value !== '') {
+      const numValue = typeof value === 'string' ? removeCurrencyMask(value) : value;
+      if (isNaN(numValue) || numValue < 0) {
+        alert('O valor mínimo deve ser um número positivo');
+        return;
+      }
+      
+      if (newFilters.maxAmount && numValue > newFilters.maxAmount) {
+        alert('O valor mínimo não pode ser maior que o valor máximo');
+        return;
+      }
+    }
+    
+    if (key === 'maxAmount' && value !== undefined && value !== '') {
+      const numValue = typeof value === 'string' ? removeCurrencyMask(value) : value;
+      if (isNaN(numValue) || numValue < 0) {
+        alert('O valor máximo deve ser um número positivo');
+        return;
+      }
+      
+      if (newFilters.minAmount && numValue < newFilters.minAmount) {
+        alert('O valor máximo não pode ser menor que o valor mínimo');
+        return;
+      }
+    }
+    
     setLocalFilters(newFilters);
   };
 
@@ -35,7 +104,9 @@ const History: React.FC = () => {
 
   const clearAllFilters = () => {
     setLocalFilters({});
-    dispatch(clearTransactions());
+    setMinAmountDisplay('');
+    setMaxAmountDisplay('');
+    dispatch(setFilters({}));
   };
 
   const handleSort = (sortBy: 'date' | 'amount') => {
@@ -43,6 +114,26 @@ const History: React.FC = () => {
     const newFilters = { ...localFilters, sortBy, sortOrder: currentOrder };
     setLocalFilters(newFilters);
     dispatch(setFilters(newFilters));
+  };
+
+  const handleMinAmountChange = (value: string) => {
+    const maskedValue = applyCurrencyMask(value);
+    setMinAmountDisplay(maskedValue);
+    
+    const numericValue = removeCurrencyMask(maskedValue);
+    
+    const newFilters = { ...localFilters, minAmount: numericValue > 0 ? numericValue : undefined };
+    setLocalFilters(newFilters);
+  };
+
+  const handleMaxAmountChange = (value: string) => {
+    const maskedValue = applyCurrencyMask(value);
+    setMaxAmountDisplay(maskedValue);
+    
+        const numericValue = removeCurrencyMask(maskedValue);
+    
+    const newFilters = { ...localFilters, maxAmount: numericValue > 0 ? numericValue : undefined };
+    setLocalFilters(newFilters);
   };
 
   if (authLoading) {
@@ -98,6 +189,8 @@ const History: React.FC = () => {
               <input
                 type="date"
                 id="startDate"
+                min={new Date(Date.now() - 5 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                max={new Date().toISOString().split('T')[0]}
                 value={localFilters.startDate || ''}
                 onChange={(e) => handleFilterChange('startDate', e.target.value || undefined)}
               />
@@ -108,6 +201,8 @@ const History: React.FC = () => {
               <input
                 type="date"
                 id="endDate"
+                min={localFilters.startDate || new Date(Date.now() - 5 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                max={new Date().toISOString().split('T')[0]}
                 value={localFilters.endDate || ''}
                 onChange={(e) => handleFilterChange('endDate', e.target.value || undefined)}
               />
@@ -116,26 +211,34 @@ const History: React.FC = () => {
             <div className="filter-group">
               <label htmlFor="minAmount">Valor Mínimo</label>
               <input
-                type="number"
+                type="text"
                 id="minAmount"
-                placeholder="0,00"
-                step="0.01"
-                min="0"
-                value={localFilters.minAmount || ''}
-                onChange={(e) => handleFilterChange('minAmount', e.target.value ? parseFloat(e.target.value) : undefined)}
+                placeholder="R$ 0,00"
+                value={minAmountDisplay}
+                onChange={(e) => handleMinAmountChange(e.target.value)}
+                onKeyPress={(e) => {
+                  // Permitir apenas números e teclas de controle
+                  if (!/\d/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
               />
             </div>
 
             <div className="filter-group">
               <label htmlFor="maxAmount">Valor Máximo</label>
               <input
-                type="number"
+                type="text"
                 id="maxAmount"
-                placeholder="0,00"
-                step="0.01"
-                min="0"
-                value={localFilters.maxAmount || ''}
-                onChange={(e) => handleFilterChange('maxAmount', e.target.value ? parseFloat(e.target.value) : undefined)}
+                placeholder="R$ 0,00"
+                value={maxAmountDisplay}
+                onChange={(e) => handleMaxAmountChange(e.target.value)}
+                onKeyPress={(e) => {
+                  // Permitir apenas números e teclas de controle
+                  if (!/\d/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
               />
             </div>
           </div>

@@ -15,12 +15,10 @@ export const useTransaction = () => {
       const result = await dispatch(createTransaction(transactionData)).unwrap();
       
       if (result) {
-        // Atualizar saldo do usuário
         if (user) {
           const newBalance = user.balance - transactionData.amount;
           dispatch(updateBalance(newBalance));
           
-          // Enviar notificação de atualização de saldo
           webSocketService.send({
             type: 'balance_updated',
             payload: {
@@ -31,7 +29,6 @@ export const useTransaction = () => {
           });
         }
         
-        // Enviar notificação de transação via WebSocket
         webSocketService.send({
           type: 'transaction_created',
           payload: {

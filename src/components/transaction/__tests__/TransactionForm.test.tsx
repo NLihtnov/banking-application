@@ -47,6 +47,7 @@ describe('TransactionForm Component', () => {
     expect(screen.getByLabelText(/Valor/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Nome do Destinatário/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/CPF\/CNPJ do Destinatário/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Data e Horário da Transação/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Senha de Transação/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Continuar/i })).toBeInTheDocument();
   });
@@ -153,10 +154,8 @@ describe('TransactionForm Component', () => {
     renderTransactionForm();
     
     const amountInput = screen.getByLabelText(/Valor/i);
-    expect(amountInput).toHaveAttribute('type', 'number');
-    expect(amountInput).toHaveAttribute('step', '0.01');
-    expect(amountInput).toHaveAttribute('min', '0');
-    expect(amountInput).toHaveAttribute('placeholder', '0,00');
+    expect(amountInput).toHaveAttribute('type', 'text');
+    expect(amountInput).toHaveAttribute('placeholder', 'R$ 0,00');
   });
 
   test('transaction password field has correct attributes', () => {
@@ -177,6 +176,14 @@ describe('TransactionForm Component', () => {
     expect(screen.getByLabelText(/Senha de Transação/i)).toHaveAttribute('required');
   });
 
+  test('transaction date time field is readonly', () => {
+    renderTransactionForm();
+    
+    const dateTimeInput = screen.getByLabelText(/Data e Horário da Transação/i);
+    expect(dateTimeInput).toHaveAttribute('readonly');
+    expect(dateTimeInput).toHaveClass('readonly-field');
+  });
+
   test('displays form data values correctly', () => {
     const formData = {
       type: 'PIX',
@@ -190,10 +197,80 @@ describe('TransactionForm Component', () => {
     renderTransactionForm({ formData });
     
     expect(screen.getByLabelText(/Tipo de Transação/i)).toHaveValue('PIX');
-    expect(screen.getByLabelText(/Valor/i)).toHaveValue(150.75);
+    expect(screen.getByLabelText(/Valor/i).value).toMatch(/R\$\s*150,75/);
     expect(screen.getByLabelText(/Nome do Destinatário/i)).toHaveValue('Jane Doe');
     expect(screen.getByLabelText(/CPF\/CNPJ do Destinatário/i)).toHaveValue('123.456.789-00');
     expect(screen.getByLabelText(/Chave PIX/i)).toHaveValue('jane@example.com');
     expect(screen.getByLabelText(/Senha de Transação/i)).toHaveValue('123456');
+  });
+
+  test('validates document field with correct format', () => {
+    renderTransactionForm();
+    
+    const documentInput = screen.getByLabelText(/CPF\/CNPJ do Destinatário/i);
+    expect(documentInput).toHaveAttribute('maxLength', '18');
+  });
+
+  test('validates agency field with correct format', () => {
+    renderTransactionForm({
+      formData: { ...defaultFormData, type: 'TED' },
+    });
+    
+    const agencyInput = screen.getByLabelText(/Agência/i);
+    expect(agencyInput).toHaveAttribute('maxLength', '4');
+    expect(agencyInput).toHaveAttribute('placeholder', '0000');
+  });
+
+  test('validates account field with correct format', () => {
+    renderTransactionForm({
+      formData: { ...defaultFormData, type: 'TED' },
+    });
+    
+    const accountInput = screen.getByLabelText(/Conta/i);
+    expect(accountInput).toHaveAttribute('maxLength', '7');
+    expect(accountInput).toHaveAttribute('placeholder', '00000-0');
+  });
+
+  test('validates transaction password field with correct format', () => {
+    renderTransactionForm();
+    
+    const passwordInput = screen.getByLabelText(/Senha de Transação/i);
+    expect(passwordInput).toHaveAttribute('maxLength', '6');
+  });
+
+  test('formats account field correctly with mask', () => {
+    const onChange = jest.fn();
+    renderTransactionForm({
+      formData: { ...defaultFormData, type: 'TED' },
+      onChange,
+    });
+    
+    const accountInput = screen.getByLabelText(/Conta/i);
+    
+    // Simular digitação de 5 dígitos
+    fireEvent.change(accountInput, { target: { value: '12345' } });
+    expect(accountInput.value).toBe('12345');
+    
+    // Simular digitação do 6º dígito (deve adicionar o hífen)
+    fireEvent.change(accountInput, { target: { value: '123456' } });
+    expect(accountInput.value).toBe('12345-6');
+  });
+
+  test('allows agency field to accept up to 4 digits', () => {
+    const onChange = jest.fn();
+    renderTransactionForm({
+      formData: { ...defaultFormData, type: 'TED' },
+      onChange,
+    });
+    
+    const agencyInput = screen.getByLabelText(/Agência/i);
+    
+    // Simular digitação de 4 dígitos
+    fireEvent.change(agencyInput, { target: { value: '1234' } });
+    expect(agencyInput.value).toBe('1234');
+    
+    // Verificar que não aceita mais de 4 dígitos
+    fireEvent.change(agencyInput, { target: { value: '12345' } });
+    expect(agencyInput.value).toBe('1234');
   });
 });

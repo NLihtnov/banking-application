@@ -1,4 +1,3 @@
-// Mock para a biblioteca jose (JWT)
 export class SignJWT {
   private _payload: any;
   setProtectedHeader = jest.fn(() => this);
@@ -15,7 +14,6 @@ export class SignJWT {
   }
 }
 
-// Mock para verificação de token
 export const jwtVerify = jest.fn().mockResolvedValue({
   payload: {
     userId: 1,
@@ -83,7 +81,6 @@ export const generateKeyPair = jest.fn().mockResolvedValue({
 
 export const generateSecret = jest.fn().mockResolvedValue(new Uint8Array(32));
 
-// Funções para JWE (JSON Web Encryption)
 export const EncryptJWT = jest.fn().mockImplementation(() => ({
   setProtectedHeader: jest.fn().mockReturnThis(),
   setIssuedAt: jest.fn().mockReturnThis(),
@@ -108,7 +105,6 @@ export const jwtDecryptCompact = jest.fn().mockResolvedValue({
   },
 });
 
-// Errors
 export class JOSEError extends Error {
   constructor(message: string) {
     super(message);
@@ -137,10 +133,8 @@ export class JWTClaimValidationFailed extends JOSEError {
   }
 }
 
-// Mock para verificação de expiração
 export const isJWTExpired = jest.fn().mockReturnValue(false);
 
-// Mock default
 const jose = {
   SignJWT,
   jwtVerify,

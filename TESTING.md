@@ -1,6 +1,6 @@
 # Guia de Testes - Banking App
 
-Este documento explica como executar testes unitários e visualizar a cobertura de código no projeto Banking App.
+Este documento explica como executar testes unitários e visualizar a cobertura de código no projeto Banking App, que segue os princípios da Clean Architecture.
 
 ## Scripts Disponíveis
 
@@ -62,6 +62,8 @@ Após executar `npm run test:coverage`, os relatórios são gerados em:
 - **Testes de componentes**: `ComponentName.test.tsx`
 - **Testes de hooks**: `useHookName.test.ts`
 - **Testes de utilitários**: `utilityName.test.ts`
+- **Testes de casos de uso**: `UseCaseName.test.ts`
+- **Testes de repositórios**: `RepositoryName.test.ts`
 
 ### Organização dos Testes
 
@@ -80,6 +82,20 @@ src/
 ├── utils/
 │   ├── utilityName.ts
 │   └── utilityName.test.ts
+├── domain/
+│   ├── entities/
+│   │   ├── EntityName.ts
+│   │   └── EntityName.test.ts
+│   └── repositories/
+│       └── IRepositoryName.test.ts
+├── application/
+│   └── usecases/
+│       ├── UseCaseName.ts
+│       └── UseCaseName.test.ts
+├── infrastructure/
+│   └── repositories/
+│       ├── RepositoryName.ts
+│       └── RepositoryName.test.ts
 └── __tests__/
     └── integration/
 ```
@@ -128,6 +144,9 @@ O projeto inclui mocks para:
 
 O projeto inclui integração completa com as APIs simuladas:
 - **`src/__mocks__/api.ts`**: Mocks completos para todas as APIs
+- **`src/__mocks__/axios.ts`**: Cliente HTTP mockado
+- **`src/__mocks__/jose.ts`**: Biblioteca JWT mockada
+- **`src/__mocks__/JwtService.ts`**: Serviço JWT mockado
 - **`src/config/test.ts`**: Configuração específica para ambiente de teste
 - **Dados de teste**: Usuários e transações pré-configurados
 - **Mocks automáticos**: Configuração automática no setup dos testes
@@ -168,6 +187,79 @@ describe('Component with API', () => {
 - **Tratamento de erros**: Incluem cenários de erro (404, 401, etc.)
 - **Consistência de dados**: Mantêm estado entre chamadas
 - **Verificação de chamadas**: Permitem verificar se APIs foram chamadas
+
+## Testes por Camada da Arquitetura
+
+### 1. Domain Layer Tests
+
+```tsx
+// src/domain/entities/User.test.ts
+import { User } from './User';
+
+describe('User Entity', () => {
+  it('should create user with valid data', () => {
+    const user = new User({
+      id: '1',
+      email: 'test@example.com',
+      name: 'Test User'
+    });
+    
+    expect(user.email).toBe('test@example.com');
+    expect(user.name).toBe('Test User');
+  });
+});
+```
+
+### 2. Application Layer Tests
+
+```tsx
+// src/application/usecases/AuthenticationUseCase.test.ts
+import { AuthenticationUseCase } from './AuthenticationUseCase';
+
+describe('AuthenticationUseCase', () => {
+  it('should authenticate user with valid credentials', async () => {
+    const useCase = new AuthenticationUseCase(mockUserRepo);
+    const result = await useCase.execute({ email: 'test@example.com', password: '123456' });
+    
+    expect(result.success).toBe(true);
+    expect(result.user).toBeDefined();
+  });
+});
+```
+
+### 3. Infrastructure Layer Tests
+
+```tsx
+// src/infrastructure/repositories/UserRepository.test.ts
+import { UserRepository } from './UserRepository';
+
+describe('UserRepository', () => {
+  it('should fetch user by id', async () => {
+    const repo = new UserRepository(mockApiClient);
+    const user = await repo.findById('1');
+    
+    expect(user).toBeDefined();
+    expect(user.id).toBe('1');
+  });
+});
+```
+
+### 4. Presentation Layer Tests
+
+```tsx
+// src/components/auth/Login.test.tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import Login from './Login';
+
+describe('Login Component', () => {
+  it('should render login form', () => {
+    render(<Login />);
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/senha/i)).toBeInTheDocument();
+  });
+});
+```
 
 ## Exemplos de Testes
 
@@ -240,6 +332,34 @@ describe('formatCurrency', () => {
 });
 ```
 
+### Teste de Integração
+
+```tsx
+// src/__tests__/api-integration.test.ts
+import { mockApi } from '../__mocks__/api';
+
+describe('API Integration', () => {
+  it('should complete full transaction flow', async () => {
+    // Login
+    const loginResponse = await mockApi.auth.login({
+      email: 'test@example.com',
+      password: '123456'
+    });
+    
+    expect(loginResponse.success).toBe(true);
+    
+    // Create transaction
+    const transactionResponse = await mockApi.transactions.create({
+      amount: 100,
+      type: 'PIX',
+      recipient: 'recipient@example.com'
+    });
+    
+    expect(transactionResponse.success).toBe(true);
+  });
+});
+```
+
 ## Troubleshooting
 
 ### Problemas Comuns
@@ -261,7 +381,17 @@ npm test -- -t "test name"
 
 # Executar testes com verbose
 npm test -- --verbose
+
+# Executar testes específicos por padrão
+npm test -- --testPathPattern="auth"
 ```
+
+### Problemas de Configuração
+
+1. **Jest não encontra arquivos**: Verifique `jest.config.js` e `.jestignore`
+2. **Mocks não funcionam**: Verifique `jest.setup.js` e `src/__mocks__/`
+3. **TypeScript errors**: Verifique `tsconfig.jest.json`
+4. **Cobertura não gera**: Verifique se `--coverage` está sendo passado
 
 ## Integração com CI/CD
 
@@ -271,6 +401,27 @@ O script `npm run test:ci` é otimizado para integração contínua:
 - Falha se a cobertura estiver abaixo dos thresholds
 - Gera relatórios em formato JSON para análise
 
+## Testes de Performance
+
+### WebSocket Tests
+
+```tsx
+import { WebSocketService } from '../services/WebSocketService';
+
+describe('WebSocket Performance', () => {
+  it('should handle multiple messages quickly', async () => {
+    const ws = new WebSocketService();
+    const messages = Array.from({ length: 100 }, (_, i) => `message-${i}`);
+    
+    const start = performance.now();
+    await Promise.all(messages.map(msg => ws.send(msg)));
+    const end = performance.now();
+    
+    expect(end - start).toBeLessThan(1000); // Less than 1 second
+  });
+});
+```
+
 ## Contribuindo
 
 Ao adicionar novos testes:
@@ -279,3 +430,12 @@ Ao adicionar novos testes:
 3. Use mocks apropriados para dependências externas
 4. Teste casos de sucesso e erro
 5. Documente testes complexos
+6. Teste todas as camadas da arquitetura
+7. Inclua testes de integração para fluxos completos
+
+## Recursos Adicionais
+
+- **React Testing Library**: https://testing-library.com/docs/react-testing-library/intro/
+- **Jest**: https://jestjs.io/docs/getting-started
+- **TypeScript + Jest**: https://jestjs.io/docs/getting-started#using-typescript
+- **Clean Architecture Testing**: Padrões para testar cada camada isoladamente

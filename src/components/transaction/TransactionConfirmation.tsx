@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from '../../hooks';
 import { CreateTransactionData } from '../../domain/entities/types';
 import { formatCurrency } from '../../utils/formatters';
+import { getTransactionIcon } from '../../utils/icons';
 import './TransactionConfirmation.css';
 
 interface TransactionConfirmationProps {
@@ -18,14 +19,6 @@ export const TransactionConfirmation: React.FC<TransactionConfirmationProps> = (
   loading = false
 }) => {
   const { t, currentLanguage } = useTranslation();
-
-  const getTransactionIcon = (type: string) => {
-    switch (type) {
-      case 'PIX': return '⚡';
-      case 'TED': return '🏦';
-      default: return '💸';
-    }
-  };
 
   const getTransactionColor = (type: string) => {
     switch (type) {
@@ -73,6 +66,20 @@ export const TransactionConfirmation: React.FC<TransactionConfirmationProps> = (
               <span className="detail-label">CPF/CNPJ:</span>
               <span className="detail-value document">
                 {transactionData.recipientDocument}
+              </span>
+            </div>
+
+            <div className="detail-row">
+              <span className="detail-label">Data e Horário:</span>
+              <span className="detail-value datetime">
+                {new Date().toLocaleString('pt-BR', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit'
+                })}
               </span>
             </div>
 

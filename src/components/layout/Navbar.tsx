@@ -56,7 +56,6 @@ const Navbar: React.FC = memo(() => {
         <div className="navbar-user">
           <NotificationBell />
           <LanguageSelector />
-          <span className="user-name">{t('welcome')}, {user?.name}</span>
           <button onClick={handleLogout} className="logout-button">
             {t('logout')}
           </button>
@@ -87,7 +86,6 @@ const Navbar: React.FC = memo(() => {
             {t('history')}
           </Link>
           <div className="mobile-menu-user">
-            <span className="mobile-user-name">{t('welcome')}, {user?.name}</span>
             <button onClick={handleLogout} className="mobile-logout-button">
               {t('logout')}
             </button>

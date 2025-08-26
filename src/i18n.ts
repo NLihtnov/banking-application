@@ -12,7 +12,7 @@ i18n
     debug: process.env.NODE_ENV === 'development',
     
     interpolation: {
-      escapeValue: false, // React already escapes values
+      escapeValue: false,
     },
     
     backend: {
@@ -27,7 +27,6 @@ i18n
     resources: {
       pt: {
         translation: {
-          // Common
           loading: 'Carregando...',
           error: 'Erro',
           success: 'Sucesso',
@@ -40,14 +39,12 @@ i18n
           next: 'Próximo',
           previous: 'Anterior',
           
-          // Navigation
           home: 'Início',
           transactions: 'Transações',
           history: 'Histórico',
           profile: 'Perfil',
           logout: 'Sair',
           
-          // Auth
           login: 'Entrar',
           register: 'Cadastrar',
           email: 'E-mail',
@@ -65,7 +62,6 @@ i18n
           passwordsDoNotMatch: 'Senhas não coincidem',
           noAccount: 'Não tem uma conta?',
           
-          // Home
           welcomeMessage: 'Bem-vindo, {{name}}!',
           manageFinances: 'Gerencie suas finanças de forma simples e segura',
           currentBalance: 'Saldo Atual',
@@ -79,7 +75,6 @@ i18n
           loadingTransactions: 'Carregando transações...',
           noTransactions: 'Nenhuma transação encontrada',
           
-          // Transactions
           transaction: 'Transação',
           amount: 'Valor',
           recipient: 'Destinatário',
@@ -97,7 +92,6 @@ i18n
           recipientRequired: 'Destinatário é obrigatório',
           amountRequired: 'Valor é obrigatório',
           
-          // History
           transactionHistory: 'Histórico de Transações',
           filterByType: 'Filtrar por tipo',
           filterByDate: 'Filtrar por data',
@@ -107,13 +101,11 @@ i18n
           applyFilter: 'Aplicar Filtro',
           clearFilter: 'Limpar Filtro',
           
-          // Notifications
           notifications: 'Notificações',
           noNotifications: 'Nenhuma notificação',
           markAsRead: 'Marcar como lida',
           markAllAsRead: 'Marcar todas como lidas',
           
-          // Validation
           required: 'Campo obrigatório',
           invalidEmail: 'E-mail inválido',
           minLength: 'Mínimo de {{min}} caracteres',
@@ -122,11 +114,10 @@ i18n
           maxValue: 'Valor máximo: {{max}}',
         }
       },
-      en: {
-        translation: {
-          // Common
-          loading: 'Loading...',
-          error: 'Error',
+        en: {
+          translation: {
+            loading: 'Loading...',
+            error: 'Error',
           success: 'Success',
           cancel: 'Cancel',
           save: 'Save',
@@ -137,14 +128,12 @@ i18n
           next: 'Next',
           previous: 'Previous',
           
-          // Navigation
           home: 'Home',
           transactions: 'Transactions',
           history: 'History',
           profile: 'Profile',
           logout: 'Logout',
           
-          // Auth
           login: 'Login',
           register: 'Register',
           email: 'Email',
@@ -162,7 +151,6 @@ i18n
           passwordsDoNotMatch: 'Passwords do not match',
           noAccount: "Don't have an account?",
           
-          // Home
           welcomeMessage: 'Welcome, {{name}}!',
           manageFinances: 'Manage your finances simply and securely',
           currentBalance: 'Current Balance',
@@ -176,7 +164,6 @@ i18n
           loadingTransactions: 'Loading transactions...',
           noTransactions: 'No transactions found',
           
-          // Transactions
           transaction: 'Transaction',
           amount: 'Amount',
           recipient: 'Recipient',
@@ -194,7 +181,6 @@ i18n
           recipientRequired: 'Recipient is required',
           amountRequired: 'Amount is required',
           
-          // History
           transactionHistory: 'Transaction History',
           filterByType: 'Filter by type',
           filterByDate: 'Filter by date',
@@ -204,13 +190,11 @@ i18n
           applyFilter: 'Apply Filter',
           clearFilter: 'Clear Filter',
           
-          // Notifications
           notifications: 'Notifications',
           noNotifications: 'No notifications',
           markAsRead: 'Mark as read',
           markAllAsRead: 'Mark all as read',
           
-          // Validation
           required: 'Required field',
           invalidEmail: 'Invalid email',
           minLength: 'Minimum {{min}} characters',
@@ -219,11 +203,10 @@ i18n
           maxValue: 'Maximum value: {{max}}',
         }
       },
-      es: {
-        translation: {
-          // Common
-          loading: 'Cargando...',
-          error: 'Error',
+        es: {
+          translation: {
+            loading: 'Cargando...',
+            error: 'Error',
           success: 'Éxito',
           cancel: 'Cancelar',
           save: 'Guardar',
@@ -234,14 +217,12 @@ i18n
           next: 'Siguiente',
           previous: 'Anterior',
           
-          // Navigation
           home: 'Inicio',
           transactions: 'Transacciones',
           history: 'Historial',
           profile: 'Perfil',
           logout: 'Cerrar sesión',
           
-          // Auth
           login: 'Iniciar sesión',
           register: 'Registrarse',
           email: 'Correo electrónico',
@@ -259,7 +240,6 @@ i18n
           passwordsDoNotMatch: 'Las contraseñas no coinciden',
           noAccount: '¿No tienes una cuenta?',
           
-          // Home
           welcomeMessage: '¡Bienvenido, {{name}}!',
           manageFinances: 'Gestiona tus finanzas de forma simple y segura',
           currentBalance: 'Saldo Actual',
@@ -273,7 +253,6 @@ i18n
           loadingTransactions: 'Cargando transacciones...',
           noTransactions: 'No se encontraron transacciones',
           
-          // Transactions
           transaction: 'Transacción',
           amount: 'Cantidad',
           recipient: 'Destinatario',
@@ -291,7 +270,6 @@ i18n
           recipientRequired: 'El destinatario es obligatorio',
           amountRequired: 'La cantidad es obligatoria',
           
-          // History
           transactionHistory: 'Historial de Transacciones',
           filterByType: 'Filtrar por tipo',
           filterByDate: 'Filtrar por fecha',
@@ -301,13 +279,11 @@ i18n
           applyFilter: 'Aplicar Filtro',
           clearFilter: 'Limpiar Filtro',
           
-          // Notifications
           notifications: 'Notificaciones',
           noNotifications: 'Sin notificaciones',
           markAsRead: 'Marcar como leída',
           markAllAsRead: 'Marcar todas como leídas',
           
-          // Validation
           required: 'Campo obligatorio',
           invalidEmail: 'Correo electrónico inválido',
           minLength: 'Mínimo {{min}} caracteres',

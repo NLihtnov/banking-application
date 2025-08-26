@@ -334,8 +334,9 @@ describe('History Component', () => {
     fireEvent.change(minAmountInput, { target: { value: '100' } });
     fireEvent.change(maxAmountInput, { target: { value: '1000' } });
 
-    expect(minAmountInput).toHaveValue(100);
-    expect(maxAmountInput).toHaveValue(1000);
+    // Agora os inputs mostram valores formatados como moeda
+    expect(minAmountInput.value).toMatch(/R\$\s*1,00/);
+    expect(maxAmountInput.value).toMatch(/R\$\s*10,00/);
   });
 
   test('handles apply filters button click', () => {
@@ -390,7 +391,7 @@ describe('History Component', () => {
           transactions: [],
           loading: false,
           error: null,
-          filters: {},
+          filters: { type: 'PIX', period: 7 }, // Filtros aplicados
         },
       },
     });
@@ -398,7 +399,7 @@ describe('History Component', () => {
     const clearFiltersButton = screen.getByText('Limpar Filtros');
     fireEvent.click(clearFiltersButton);
 
-    
+    // Verifica se o botão existe e funciona sem erro
     expect(clearFiltersButton).toBeInTheDocument();
   });
 
@@ -701,5 +702,180 @@ describe('History Component', () => {
     await waitFor(() => {
       expect(screen.getByText('- R$ 100,00')).toBeInTheDocument();
     });
+  });
+
+  test('validates date inputs correctly', () => {
+    const mockUser = {
+      id: 1,
+      name: 'João Silva',
+      email: 'joao@example.com',
+      balance: 5000.00,
+    };
+
+    // Mock do alert para capturar as mensagens
+    const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+    renderWithProviders(<History />, {
+      preloadedState: {
+        auth: {
+          user: mockUser,
+          loading: false,
+          error: null,
+          isAuthenticated: true,
+        },
+        transaction: {
+          transactions: [],
+          loading: false,
+          error: null,
+          filters: {},
+        },
+      },
+    });
+
+    const startDateInput = screen.getByLabelText('Data Inicial');
+    const endDateInput = screen.getByLabelText('Data Final');
+
+    // Verificar se os inputs têm as validações de data máxima
+    expect(startDateInput).toHaveAttribute('max');
+    expect(endDateInput).toHaveAttribute('max');
+    expect(startDateInput).toHaveAttribute('min');
+    expect(endDateInput).toHaveAttribute('min');
+
+    mockAlert.mockRestore();
+  });
+
+  test('validates amount inputs correctly', () => {
+    const mockUser = {
+      id: 1,
+      name: 'João Silva',
+      email: 'joao@example.com',
+      balance: 5000.00,
+    };
+
+    // Mock do alert para capturar as mensagens
+    const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+    renderWithProviders(<History />, {
+      preloadedState: {
+        auth: {
+          user: mockUser,
+          loading: false,
+          error: null,
+          isAuthenticated: true,
+        },
+        transaction: {
+          transactions: [],
+          loading: false,
+          error: null,
+          filters: {},
+        },
+      },
+    });
+
+    const minAmountInput = screen.getByLabelText('Valor Mínimo');
+    const maxAmountInput = screen.getByLabelText('Valor Máximo');
+
+    // Verificar se os inputs são do tipo text (para máscara de moeda)
+    expect(minAmountInput).toHaveAttribute('type', 'text');
+    expect(maxAmountInput).toHaveAttribute('type', 'text');
+    expect(minAmountInput).toHaveAttribute('placeholder', 'R$ 0,00');
+    expect(maxAmountInput).toHaveAttribute('placeholder', 'R$ 0,00');
+
+    mockAlert.mockRestore();
+  });
+
+  test('prevents negative values in amount inputs', () => {
+    const mockUser = {
+      id: 1,
+      name: 'João Silva',
+      email: 'joao@example.com',
+      balance: 5000.00,
+    };
+
+    // Mock do alert para capturar as mensagens
+    const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+    renderWithProviders(<History />, {
+      preloadedState: {
+        auth: {
+          user: mockUser,
+          loading: false,
+          error: null,
+          isAuthenticated: true,
+        },
+        transaction: {
+          transactions: [],
+          loading: false,
+          error: null,
+          filters: {},
+        },
+      },
+    });
+
+    const minAmountInput = screen.getByLabelText('Valor Mínimo');
+    const maxAmountInput = screen.getByLabelText('Valor Máximo');
+
+    // Simular tentativa de inserir valor negativo (agora com máscara)
+    fireEvent.change(minAmountInput, { target: { value: '-100' } });
+    
+    // Com a máscara, valores negativos são automaticamente removidos
+    // O input deve mostrar apenas os números válidos
+    expect(minAmountInput.value).toMatch(/R\$\s*1,00/);
+
+    // Limpar o mock e testar o valor máximo
+    mockAlert.mockClear();
+    
+    fireEvent.change(maxAmountInput, { target: { value: '-50' } });
+    
+    // Com a máscara, valores negativos são automaticamente removidos
+    expect(maxAmountInput.value).toMatch(/R\$\s*0,50/);
+
+    mockAlert.mockRestore();
+  });
+
+  test('applies currency mask correctly', () => {
+    const mockUser = {
+      id: 1,
+      name: 'João Silva',
+      email: 'joao@example.com',
+      balance: 5000.00,
+    };
+
+    renderWithProviders(<History />, {
+      preloadedState: {
+        auth: {
+          user: mockUser,
+          loading: false,
+          error: null,
+          isAuthenticated: true,
+        },
+        transaction: {
+          transactions: [],
+          loading: false,
+          error: null,
+          filters: {},
+        },
+      },
+    });
+
+    const minAmountInput = screen.getByLabelText('Valor Mínimo');
+    const maxAmountInput = screen.getByLabelText('Valor Máximo');
+
+    // Testar entrada de valores diferentes
+    fireEvent.change(minAmountInput, { target: { value: '1' } });
+    expect(minAmountInput.value).toMatch(/R\$\s*0,01/);
+
+    fireEvent.change(minAmountInput, { target: { value: '100' } });
+    expect(minAmountInput.value).toMatch(/R\$\s*1,00/);
+
+    fireEvent.change(minAmountInput, { target: { value: '1234' } });
+    expect(minAmountInput.value).toMatch(/R\$\s*12,34/);
+
+    fireEvent.change(maxAmountInput, { target: { value: '5000' } });
+    expect(maxAmountInput.value).toMatch(/R\$\s*50,00/);
+
+    // Testar entrada de valores com centavos
+    fireEvent.change(maxAmountInput, { target: { value: '123456' } });
+    expect(maxAmountInput.value).toMatch(/R\$\s*1\.234,56/);
   });
 });
