@@ -14,7 +14,7 @@ describe('Test Config Module', () => {
   describe('testConfig', () => {
     test('should have apiUrl property', () => {
       expect(testConfig).toHaveProperty('apiUrl');
-      expect(testConfig.apiUrl).toBe('http://localhost:3001');
+      expect(testConfig.apiUrl).toBe('https://my-json-server.typicode.com/NLihtnov/banking-application');
     });
 
     test('should have testDb property with users', () => {

@@ -1,3 +1,5 @@
+import { config } from '../config';
+
 export interface NotificationData {
   id: string;
   type: 'transaction' | 'balance_update' | 'security_alert' | 'system_message';
@@ -30,7 +32,7 @@ class WebSocketService {
       this.token = token;
       const wsUrl = process.env.NODE_ENV === 'production' 
         ? `wss://api.magnumbank.com/ws?token=${token}`
-        : `ws://localhost:3002/ws?token=${token}`;
+        : `${config.webSocketURL}/ws?token=${token}`;
       
       try {
         this.socket = new WebSocket(wsUrl);

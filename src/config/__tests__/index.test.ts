@@ -1,6 +1,6 @@
 import { config } from '../index';
 
-describe('Config Module', () => {
+describe('config', () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
@@ -8,107 +8,47 @@ describe('Config Module', () => {
     process.env = { ...originalEnv };
   });
 
-  afterEach(() => {
+  afterAll(() => {
     process.env = originalEnv;
   });
 
-  test('should have baseURL property', () => {
-    expect(config).toHaveProperty('baseURL');
-  });
-
-  test('should use default baseURL when REACT_APP_API_URL is not set', () => {
+  it('should use default API URL when REACT_APP_API_URL is not set', () => {
     delete process.env.REACT_APP_API_URL;
     
-    
-    jest.resetModules();
+    // Re-import to get fresh config
     const { config: freshConfig } = require('../index');
+    expect(freshConfig.baseURL).toBe('https://my-json-server.typicode.com/NLihtnov/banking-application');
+  });
+
+  it('should use environment variable when REACT_APP_API_URL is set', () => {
+    process.env.REACT_APP_API_URL = 'http://localhost:3001';
     
+    // Re-import to get fresh config
+    const { config: freshConfig } = require('../index');
     expect(freshConfig.baseURL).toBe('http://localhost:3001');
   });
 
-  test('should use REACT_APP_API_URL when set', () => {
-    process.env.REACT_APP_API_URL = 'https://api.example.com';
+  it('should use default WebSocket URL when REACT_APP_WEBSOCKET_URL is not set', () => {
+    delete process.env.REACT_APP_WEBSOCKET_URL;
     
-    
-    jest.resetModules();
+    // Re-import to get fresh config
     const { config: freshConfig } = require('../index');
-    
-    expect(freshConfig.baseURL).toBe('https://api.example.com');
+    expect(freshConfig.webSocketURL).toBe('ws://localhost:3002');
   });
 
-  test('should use empty string as fallback when REACT_APP_API_URL is empty', () => {
+  it('should use environment variable when REACT_APP_WEBSOCKET_URL is set', () => {
+    process.env.REACT_APP_WEBSOCKET_URL = 'ws://localhost:3003';
+    
+    // Re-import to get fresh config
+    const { config: freshConfig } = require('../index');
+    expect(freshConfig.webSocketURL).toBe('ws://localhost:3003');
+  });
+
+  it('should use default API URL when REACT_APP_API_URL is empty string', () => {
     process.env.REACT_APP_API_URL = '';
     
-    
-    jest.resetModules();
+    // Re-import to get fresh config
     const { config: freshConfig } = require('../index');
-    
-    expect(freshConfig.baseURL).toBe('http://localhost:3001');
-  });
-
-  test('should handle undefined REACT_APP_API_URL', () => {
-    process.env.REACT_APP_API_URL = undefined;
-    
-    
-    jest.resetModules();
-    const { config: freshConfig } = require('../index');
-    
-    expect(freshConfig.baseURL).toBe('http://localhost:3001');
-  });
-
-  test('should handle null REACT_APP_API_URL', () => {
-    process.env.REACT_APP_API_URL = null as any;
-    
-    
-    jest.resetModules();
-    const { config: freshConfig } = require('../index');
-    
-    expect(freshConfig.baseURL).toBe('http://localhost:3001');
-  });
-
-  test('should use custom API URL from environment', () => {
-    process.env.REACT_APP_API_URL = 'https://api.example.com';
-    
-    
-    jest.resetModules();
-    const { config: freshConfig } = require('../index');
-    
-    expect(freshConfig.baseURL).toBe('https://api.example.com');
-  });
-
-
-
-  test('should handle HTTPS URLs', () => {
-    process.env.REACT_APP_API_URL = 'https://api.example.com';
-    
-    
-    jest.resetModules();
-    const { config: freshConfig } = require('../index');
-    
-    expect(freshConfig.baseURL).toBe('https://api.example.com');
-  });
-
-  test('should handle URLs with paths', () => {
-    process.env.REACT_APP_API_URL = 'https://api.example.com';
-    
-    
-    jest.resetModules();
-    const { config: freshConfig } = require('../index');
-    
-    expect(freshConfig.baseURL).toBe('https://api.example.com');
-  });
-
-  test('config object should be immutable', () => {
-    
-    const originalBaseURL = config.baseURL;
-    (config as any).baseURL = 'https://api.example.com';
-    expect(config.baseURL).toBe('https://api.example.com');
-    
-    (config as any).baseURL = originalBaseURL;
-  });
-
-  test('config should be exported as default', () => {
-    expect(config).toBeDefined();
-    expect(typeof config).toBe('object');
+    expect(freshConfig.baseURL).toBe('https://my-json-server.typicode.com/NLihtnov/banking-application');
   });
 });

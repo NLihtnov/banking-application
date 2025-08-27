@@ -212,8 +212,13 @@ npm test -- --testPathPattern="auth"
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
+# Para desenvolvimento local
 REACT_APP_API_URL=http://localhost:3001
 REACT_APP_WEBSOCKET_URL=ws://localhost:3002
+
+# Para produção (Vercel/Netlify)
+REACT_APP_API_URL=https://my-json-server.typicode.com/NLihtnov/banking-application
+REACT_APP_WEBSOCKET_URL=wss://api.magnumbank.com
 ```
 
 ### Personalização
@@ -242,18 +247,27 @@ A aplicação é totalmente responsiva e funciona em:
 
 ### Vercel (Recomendado)
 1. Conecte seu repositório ao Vercel
-2. Configure as variáveis de ambiente
+2. Configure as variáveis de ambiente:
+   - `REACT_APP_API_URL`: `https://my-json-server.typicode.com/NLihtnov/banking-application`
+   - `REACT_APP_WEBSOCKET_URL`: `wss://api.magnumbank.com` (ou deixe vazio se não usar WebSocket)
 3. Deploy automático a cada push
 
 ### Netlify
 1. Conecte seu repositório ao Netlify
 2. Configure o build command: `npm run build`
 3. Configure o publish directory: `build`
+4. Configure as mesmas variáveis de ambiente do Vercel
 
 ### Build Local
 ```bash
 npm run build
 ```
+
+### Configuração do JSON Server
+Para usar o my-json-server.typicode.com:
+1. Crie um repositório no GitHub com o arquivo `db.json`
+2. Acesse: `https://my-json-server.typicode.com/seu-usuario/seu-repo`
+3. Configure a variável `REACT_APP_API_URL` com essa URL
 
 ## 🤝 Contribuição
 

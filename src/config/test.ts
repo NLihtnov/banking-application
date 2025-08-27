@@ -1,5 +1,5 @@
 export const testConfig = {
-  apiUrl: 'http://localhost:3001',
+  apiUrl: 'https://my-json-server.typicode.com/NLihtnov/banking-application',
   
   testDb: {
     users: [

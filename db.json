@@ -5,7 +5,7 @@
       "name": "João Silva",
       "email": "joao@email.com",
       "password": "123456",
-      "balance": 3857.99,
+      "balance": 3857.8799999999997,
       "transactionPassword": "123456"
     },
     {
@@ -360,6 +360,34 @@
       "pixKey": "",
       "date": "2025-08-26T18:41:50.565Z",
       "balance": 3857.99
+    },
+    {
+      "id": 1756236794014,
+      "userId": 1,
+      "type": "TED",
+      "amount": 0.1,
+      "recipientName": "teste",
+      "recipientDocument": "03284946072",
+      "bank": "estes",
+      "agency": "3333",
+      "account": "454508",
+      "pixKey": "",
+      "date": "2025-08-26T19:33:14.014Z",
+      "balance": 3857.89
+    },
+    {
+      "id": 1756245604849,
+      "userId": 1,
+      "type": "TED",
+      "amount": 0.01,
+      "recipientName": "teste ",
+      "recipientDocument": "04378988888",
+      "bank": "teste",
+      "agency": "0218",
+      "account": "114454",
+      "pixKey": "",
+      "date": "2025-08-26T22:00:04.849Z",
+      "balance": 3857.8799999999997
     }
   ]
 }
